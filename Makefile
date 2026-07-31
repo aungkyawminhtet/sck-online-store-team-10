@@ -1,6 +1,6 @@
 # run all systems
 include store-web/.env
-export $(shell sed 's/=.*//' 'store-web/.env')
+export STORE_SERVICE_URL
 
 
 all: backend_start store_web
@@ -209,7 +209,7 @@ gen-swagger:
 
 # --- EKS Build & Deploy ---
 # Image tag format: eks-YYMMDD-HHMM (e.g., eks-260319-1045)
-EKS_TAG := eks-$(shell date +%y%m%d-%H%M)
+EKS_TAG = eks-$(shell date +%y%m%d-%H%M)
 DOCKER_REPO := siamchamnankit
 
 eks_build_store:
