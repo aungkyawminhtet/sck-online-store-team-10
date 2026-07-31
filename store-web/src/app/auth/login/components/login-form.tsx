@@ -18,6 +18,7 @@ const LoginForm = () => {
     username: '',
     password: ''
   })
+  const [showPassword, setShowPassword] = useState(false)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleLogin = async () => {
@@ -113,11 +114,25 @@ const LoginForm = () => {
               <InputField
                 id="login-password"
                 label="Password"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 name="password"
                 placeholder="Enter your password"
                 required
                 onChange={handleChange}
+                endAdornment={
+                  <button
+                    id="login-password-visibility-btn"
+                    type="button"
+                    aria-label={
+                      showPassword ? 'Hide password' : 'Show password'
+                    }
+                    aria-pressed={showPassword}
+                    onClick={() => setShowPassword((visible) => !visible)}
+                    className="min-h-6 min-w-11 rounded px-1 text-xs font-medium text-indigo-700 hover:bg-indigo-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
+                  >
+                    {showPassword ? 'Hide' : 'Show'}
+                  </button>
+                }
               />
               {error.password && (
                 <span
