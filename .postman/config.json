@@ -1,0 +1,25 @@
+{
+  "workspace": {
+    "id": "d13feddf-56bc-47da-9ec9-95a62f9ec7e8"
+  },
+  "entities": {
+    "environments": [
+      "..\\api-doc\\SCK-Online-Store.postman_environment.json",
+      "..\\atdd\\api\\sck-online-store.local.postman_environment.json",
+      "..\\atdd\\api\\sck-online-store.remote.postman_environment.json"
+    ],
+    "flows": [],
+    "globals": [],
+    "mocks": [],
+    "specs": [
+      "..\\store-service\\cmd\\docs\\swagger.json",
+      "..\\store-service\\cmd\\docs\\swagger.yaml"
+    ],
+    "collections": [
+      "..\\api-doc\\SCK-Online-Store-Doc.postman_collection.json",
+      "..\\atdd\\api\\sck-online-store.postman_collection.json",
+      "..\\atdd\\api\\collections\\001-Authentication.postman_collection.json",
+      "..\\atdd\\api\\collections\\002-Order-Summary-PDF.postman_collection.json"
+    ]
+  }
+}
