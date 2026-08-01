@@ -280,8 +280,8 @@ make stop_test_suite
 | ที่ไหน                          | เวอร์ชันตรงนั้น              | ของคุณ       |
 | ------------------------------ | -------------------------- | ------------ |
 | `store-service/go.mod`         | ระดับภาษา `go 1.26.5`       | Go 1.26.5    |
-| `store-service/Dockerfile`     | `golang:1.26.5-alpine3.24` | Go 1.26.5    |
-| stage runtime ของ `store-service` | `alpine:3.24`           | —            |
+| `store-service/Dockerfile`     | `golang:1.26.5-alpine3.23` | Go 1.26.5    |
+| stage runtime ของ `store-service` | `alpine:3.23`           | —            |
 | `store-web/Dockerfile`         | `node:24.18.0-alpine3.24`  | Node 24.18.1 |
 | `point-service/Dockerfile`     | `node:24.18.0-alpine3.24`  | Node 24.18.1 |
 
