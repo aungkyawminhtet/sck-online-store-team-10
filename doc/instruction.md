@@ -288,8 +288,8 @@ like a bug. Every image tag is pinned to an exact patch — the table is the con
 | Where                          | Version there              | You have     |
 | ------------------------------ | -------------------------- | ------------ |
 | `store-service/go.mod`         | `go 1.26.5` language level | Go 1.26.5    |
-| `store-service/Dockerfile`     | `golang:1.26.5-alpine3.24` | Go 1.26.5    |
-| `store-service` runtime stage  | `alpine:3.24`              | —            |
+| `store-service/Dockerfile`     | `golang:1.26.5-alpine3.23` | Go 1.26.5    |
+| `store-service` runtime stage  | `alpine:3.23`              | —            |
 | `store-web/Dockerfile`         | `node:24.18.0-alpine3.24`  | Node 24.18.1 |
 | `point-service/Dockerfile`     | `node:24.18.0-alpine3.24`  | Node 24.18.1 |
 

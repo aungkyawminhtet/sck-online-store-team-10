@@ -20,8 +20,8 @@ func Test_GetCart_Should_be_Have_Data_and_Receive_Point_4(t *testing.T) {
 				Quantity:     1,
 				Name:         "43 Piece dinner Set",
 				Price:        12.95,
-				PriceTHB:     465.81,
-				PriceFullTHB: 465.811034,
+				PriceTHB:     434.08,
+				PriceFullTHB: 434.084,
 				Image:        "/43_Piece_dinner_Set.png",
 				Stock:        10,
 				Brand:        "CoolKidz",
@@ -29,9 +29,9 @@ func Test_GetCart_Should_be_Have_Data_and_Receive_Point_4(t *testing.T) {
 		},
 		Summary: cart.CartSummary{
 			TotalPrice:        12.95,
-			TotalPriceTHB:     465.81,
-			TotalPriceFullTHB: 465.811034,
-			ReceivePoint:      4,
+			TotalPriceTHB:     434.08,
+			TotalPriceFullTHB: 434.084,
+			ReceivePoint:      8,
 		},
 	}
 
@@ -92,8 +92,8 @@ func Test_AddCart_Input_Submitted_First_Product_Should_be_Have_1_Quantity_and_Re
 				Quantity:     1,
 				Name:         "Balance Training Bicycle",
 				Price:        119.95,
-				PriceTHB:     4314.6,
-				PriceFullTHB: 4314.597182,
+				PriceTHB:     4020.72,
+				PriceFullTHB: 4020.724,
 				Image:        "/Balance_Training_Bicycle.png",
 				Stock:        100,
 				Brand:        "SportsFun",
@@ -101,9 +101,9 @@ func Test_AddCart_Input_Submitted_First_Product_Should_be_Have_1_Quantity_and_Re
 		},
 		Summary: cart.CartSummary{
 			TotalPrice:        119.95,
-			TotalPriceTHB:     4314.6,
-			TotalPriceFullTHB: 4314.597182,
-			ReceivePoint:      43,
+			TotalPriceTHB:     4020.72,
+			TotalPriceFullTHB: 4020.724,
+			ReceivePoint:      80,
 		},
 	}
 	submitedCart := cart.SubmitedCart{
@@ -151,8 +151,8 @@ func Test_AddCart_Input_Submitted_More_Product_Should_be_Have_2_Quantity_and_Rec
 				Quantity:     2,
 				Name:         "Balance Training Bicycle",
 				Price:        119.95,
-				PriceTHB:     4314.6,
-				PriceFullTHB: 4314.597182,
+				PriceTHB:     4020.72,
+				PriceFullTHB: 4020.724,
 				Image:        "/Balance_Training_Bicycle.png",
 				Stock:        100,
 				Brand:        "SportsFun",
@@ -160,9 +160,9 @@ func Test_AddCart_Input_Submitted_More_Product_Should_be_Have_2_Quantity_and_Rec
 		},
 		Summary: cart.CartSummary{
 			TotalPrice:        239.9,
-			TotalPriceTHB:     8629.19,
-			TotalPriceFullTHB: 8629.194364,
-			ReceivePoint:      86,
+			TotalPriceTHB:     8041.45,
+			TotalPriceFullTHB: 8041.448,
+			ReceivePoint:      160,
 		},
 	}
 	submitedCart := cart.SubmitedCart{
@@ -215,8 +215,8 @@ func Test_UpdateCart_Input_Submitted_Quantity_2_Should_be_Have_2_Quantity_and_Re
 				Quantity:     2,
 				Name:         "43 Piece dinner Set",
 				Price:        12.95,
-				PriceTHB:     465.81,
-				PriceFullTHB: 465.811034,
+				PriceTHB:     434.08,
+				PriceFullTHB: 434.084,
 				Image:        "/43_Piece_dinner_Set.png",
 				Stock:        200,
 				Brand:        "CoolKidz",
@@ -224,9 +224,9 @@ func Test_UpdateCart_Input_Submitted_Quantity_2_Should_be_Have_2_Quantity_and_Re
 		},
 		Summary: cart.CartSummary{
 			TotalPrice:        25.9,
-			TotalPriceTHB:     931.62,
-			TotalPriceFullTHB: 931.622068,
-			ReceivePoint:      9,
+			TotalPriceTHB:     868.17,
+			TotalPriceFullTHB: 868.168,
+			ReceivePoint:      17,
 		},
 	}
 	submitedCart := cart.SubmitedCart{
