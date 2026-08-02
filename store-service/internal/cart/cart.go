@@ -4,7 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"log/slog"
+	"math"
 	"store-service/internal/common"
+	"store-service/internal/point"
 )
 
 type CartInterface interface {
@@ -15,6 +17,7 @@ type CartInterface interface {
 
 type CartService struct {
 	CartRepository CartRepository
+	PointService   point.PointInterface
 }
 
 func (cartService CartService) GetCart(ctx context.Context, uid int) (CartResult, error) {
@@ -25,6 +28,7 @@ func (cartService CartService) GetCart(ctx context.Context, uid int) (CartResult
 	}
 
 	totalPrice := 0.0
+	totalPoints := 0
 	for i := range carts {
 		c := &carts[i]
 		digit := common.ConvertToThb(c.Price)
@@ -36,11 +40,15 @@ func (cartService CartService) GetCart(ctx context.Context, uid int) (CartResult
 		c.PriceTHB = digit.ShortDecimal
 		c.PriceFullTHB = digit.LongDecimal
 		totalPrice = totalPrice + (c.Price * float64(c.Quantity))
-	}
 
-	decimal := common.ConvertToThb(totalPrice)
-	totalPriceTHB := decimal.ShortDecimal
-	totalPriceFullTHB := decimal.LongDecimal
+		points, errPoint := cartService.PointService.CalculatePoint(ctx, c.PriceTHB*float64(c.Quantity))
+		if errPoint != nil {
+			slog.ErrorContext(ctx, "PointService.CalculatePoint failed",
+				"log_type", "error", "error_code", "POINT_CALCULATE_FAILED", "error_message", errPoint.Error(), "user_id", uid)
+			return CartResult{Carts: []CartDetail{}, Summary: CartSummary{}}, errPoint
+		}
+		totalPoints += points
+	}
 
 	if len(carts) == 0 {
 		return CartResult{
@@ -48,13 +56,27 @@ func (cartService CartService) GetCart(ctx context.Context, uid int) (CartResult
 			Summary: CartSummary{},
 		}, err
 	}
+
+	totalPriceTHB := 0.0
+	totalPriceFullTHB := 0.0
+	for i := range carts {
+		c := &carts[i]
+		totalPriceTHB += c.PriceTHB * float64(c.Quantity)
+		totalPriceFullTHB += c.PriceFullTHB * float64(c.Quantity)
+	}
+
+	factor2 := math.Pow(10, 2)
+	factor6 := math.Pow(10, 6)
+	totalPriceTHB = math.Round(totalPriceTHB*factor2) / factor2
+	totalPriceFullTHB = math.Round(totalPriceFullTHB*factor6) / factor6
+
 	return CartResult{
 		Carts: carts,
 		Summary: CartSummary{
 			TotalPrice:        totalPrice,
 			TotalPriceTHB:     totalPriceTHB,
 			TotalPriceFullTHB: totalPriceFullTHB,
-			ReceivePoint:      common.CalculatePoint(totalPriceTHB),
+			ReceivePoint:      totalPoints,
 		},
 	}, err
 }

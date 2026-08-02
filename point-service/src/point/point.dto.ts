@@ -3,3 +3,7 @@ export class CreatePointDto {
   userId: number;
   amount: number;
 }
+
+export class CalculatePointDto {
+  amount: number;
+}

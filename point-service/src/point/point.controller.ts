@@ -1,6 +1,6 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Logger, Post } from '@nestjs/common';
 import { PointService } from './point.service';
-import { CreatePointDto } from './point.dto';
+import { CreatePointDto, CalculatePointDto } from './point.dto';
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
 
 const otelLogger = logs.getLogger('point-service');
@@ -66,6 +66,19 @@ export class PointController {
         body: 'PointService.deductPoint internal error',
         attributes: { 'error.message': error.message },
       });
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Post('calculate')
+  @HttpCode(HttpStatus.OK)
+  async calculatePoint(@Body() body: CalculatePointDto) {
+    this.logger.log(`POST /point/calculate request received: amount=${body.amount}`);
+    try {
+      const points = this.pointService.calculatePoint(body.amount);
+      return { points };
+    } catch (error) {
+      this.logger.error('PointService.calculatePoint internal error', error.stack);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

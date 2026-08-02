@@ -160,6 +160,7 @@ func main() {
 	}
 	cartService := cart.CartService{
 		CartRepository: &cartRepository,
+		PointService:   pointService,
 	}
 	productService := product.ProductService{
 		ProductRepository: &productRepository,
