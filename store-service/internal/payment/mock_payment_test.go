@@ -4,11 +4,36 @@ import (
 	"context"
 	"store-service/internal/order"
 	"store-service/internal/payment"
+	"store-service/internal/point"
 	"store-service/internal/product"
 	"store-service/internal/shipping"
 
 	"github.com/stretchr/testify/mock"
 )
+
+type mockPointService struct {
+	mock.Mock
+}
+
+func (service *mockPointService) TotalPoint(ctx context.Context, uid int) (point.TotalPoint, error) {
+	arguments := service.Called(ctx, uid)
+	return arguments.Get(0).(point.TotalPoint), arguments.Error(1)
+}
+
+func (service *mockPointService) DeductPoint(ctx context.Context, uid int, submitted point.SubmitedPoint) (point.TotalPoint, error) {
+	arguments := service.Called(ctx, uid, submitted)
+	return arguments.Get(0).(point.TotalPoint), arguments.Error(1)
+}
+
+func (service *mockPointService) CheckBurnPoint(ctx context.Context, uid int, amount int) (bool, error) {
+	arguments := service.Called(ctx, uid, amount)
+	return arguments.Bool(0), arguments.Error(1)
+}
+
+func (service *mockPointService) CalculatePoint(ctx context.Context, amount float64) (int, error) {
+	arguments := service.Called(ctx, amount)
+	return arguments.Int(0), arguments.Error(1)
+}
 
 type mockBankGateway struct {
 	mock.Mock

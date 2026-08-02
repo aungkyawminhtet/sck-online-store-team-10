@@ -46,7 +46,7 @@ CREATE TABLE order_point (
     order_id BIGINT,
     points_earned INT NOT NULL,
     points_remaining INT NOT NULL,
-    status ENUM('ACTIVE', 'SPENT', 'EXPIRED', 'VOID') DEFAULT 'ACTIVE',
+    status ENUM('PENDING', 'ACTIVE', 'SPENT', 'EXPIRED', 'VOID') DEFAULT 'PENDING',
     confirmed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP NULL,
     PRIMARY KEY (id),

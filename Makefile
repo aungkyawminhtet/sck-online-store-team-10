@@ -2,6 +2,13 @@
 include store-web/.env
 export STORE_SERVICE_URL
 
+PYTHON ?= python3
+ifeq ($(OS),Windows_NT)
+VENV_PYTHON := .\.venv\Scripts\python.exe
+else
+VENV_PYTHON := .venv/bin/python
+endif
+
 
 all: backend_start store_web
 
@@ -105,33 +112,30 @@ start_test_suite_sck:
 stop_test_suite:
 	docker compose down
 
+reset_robot_fixtures:
+	docker compose exec -T db mysql -uuser -ppassword -e "UPDATE store.products SET stock = CASE id WHEN 1 THEN 100 WHEN 2 THEN 200 END WHERE id IN (1, 2); DELETE FROM store.carts WHERE user_id IN (2, 3, 5);"
+
 run_robot: URL ?= http://localhost/product/list
-run_robot:
+run_robot: reset_robot_fixtures
 	cd atdd/ui \
-	&& python3 -m venv .venv \
-	&& . .venv/bin/activate \
-	&& pip install -r requirements.txt \
-	&& robot -v URL:$(URL) -v REMOTE_HUB_URL:$(REMOTE_HUB_URL) -x ./reports/authen.xml ./001-Authentication \
-	&& robot -v URL:$(URL) -v REMOTE_HUB_URL:$(REMOTE_HUB_URL) -x ./reports/pdf.xml ./002-Order-Summary-PDF \
-	&& deactivate
+	&& $(PYTHON) -m venv .venv \
+	&& $(VENV_PYTHON) -m pip install -r requirements.txt \
+	&& $(VENV_PYTHON) -m robot -v URL:$(URL) -v REMOTE_HUB_URL:$(REMOTE_HUB_URL) -x ./reports/authen.xml ./001-Authentication \
+	&& $(VENV_PYTHON) -m robot -v URL:$(URL) -v REMOTE_HUB_URL:$(REMOTE_HUB_URL) -x ./reports/pdf.xml ./002-Order-Summary-PDF
 
 run_robot_authentication: URL ?= http://localhost/product/list
-run_robot_authentication:
+run_robot_authentication: reset_robot_fixtures
 	cd atdd/ui \
-	&& python3 -m venv .venv \
-	&& . .venv/bin/activate \
-	&& pip install -r requirements.txt \
-	&& robot -v URL:$(URL) -v REMOTE_HUB_URL:${REMOTE_HUB_URL} -x ./reports/authen.xml ./001-Authentication \
-	&& deactivate
+	&& $(PYTHON) -m venv .venv \
+	&& $(VENV_PYTHON) -m pip install -r requirements.txt \
+	&& $(VENV_PYTHON) -m robot -v URL:$(URL) -v REMOTE_HUB_URL:$(REMOTE_HUB_URL) -x ./reports/authen.xml ./001-Authentication
 
 run_robot_order_summary_pdf: URL ?= http://localhost/product/list
-run_robot_order_summary_pdf:
+run_robot_order_summary_pdf: reset_robot_fixtures
 	cd atdd/ui \
-	&& python3 -m venv .venv \
-	&& . .venv/bin/activate \
-	&& pip install -r requirements.txt \
-	&& robot -v URL:$(URL) -v REMOTE_HUB_URL:${REMOTE_HUB_URL} -x ./reports/pdf.xml ./002-Order-Summary-PDF \
-	&& deactivate
+	&& $(PYTHON) -m venv .venv \
+	&& $(VENV_PYTHON) -m pip install -r requirements.txt \
+	&& $(VENV_PYTHON) -m robot -v URL:$(URL) -v REMOTE_HUB_URL:$(REMOTE_HUB_URL) -x ./reports/pdf.xml ./002-Order-Summary-PDF
 
 # run_newman: 
 # 	cd atdd/api \

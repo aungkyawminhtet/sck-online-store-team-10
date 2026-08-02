@@ -5,6 +5,7 @@ import (
 	"errors"
 	"store-service/internal/order"
 	"store-service/internal/payment"
+	"store-service/internal/point"
 	"store-service/internal/shipping"
 	"testing"
 	"time"
@@ -42,6 +43,7 @@ func Test_ConfirmPayment_Input_OrderNumber_2603159522001_Should_Be_Return_Tracki
 		TotalPrice:       90.00,
 		TransactionID:    "",
 		Status:           "created",
+		EarnPoint:        80,
 	}, nil)
 
 	mockBankGateway := new(mockBankGateway)
@@ -82,12 +84,18 @@ func Test_ConfirmPayment_Input_OrderNumber_2603159522001_Should_Be_Return_Tracki
 		ShippingMethodID: shippingMethodID,
 	}).Return(trackingNumber, nil)
 	mockOrderRepository.On("UpdateOrderTrackingNumber", mock.Anything, oid, trackingNumber).Return(nil)
+	mockPointService := new(mockPointService)
+	mockPointService.On("DeductPoint", mock.Anything, uid, point.SubmitedPoint{
+		Amount:  80,
+		OrderID: oid,
+	}).Return(point.TotalPoint{PendingPoint: 80}, nil)
 
 	paymentService := payment.PaymentService{
 		BankGateway:       mockBankGateway,
 		ShippingGateway:   mockShippingGateway,
 		OrderRepository:   mockOrderRepository,
 		ProductRepository: mockProductRepository,
+		PointService:      mockPointService,
 	}
 
 	submitedPayment := payment.SubmitedPayment{
@@ -101,6 +109,7 @@ func Test_ConfirmPayment_Input_OrderNumber_2603159522001_Should_Be_Return_Tracki
 	assert.Equal(t, expected.ShippingMethodID, actual.ShippingMethodID)
 	assert.Equal(t, expected.TrackingNumber, actual.TrackingNumber)
 	assert.Equal(t, nil, err)
+	mockPointService.AssertExpectations(t)
 }
 
 func Test_ConfirmPayment_Input_OrderNumber_2603159533002_Should_Be_Return_OrderRepository_GetOrderByOrderNumber_Error(t *testing.T) {

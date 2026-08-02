@@ -18,25 +18,19 @@ type PointService struct {
 }
 
 type PointGatewayInterface interface {
-	GetPoints(ctx context.Context, uid int) ([]Point, error)
+	GetPointBalance(ctx context.Context, uid int) (TotalPoint, error)
 	CreatePoint(ctx context.Context, uid int, body Point) (Point, error)
 	CalculatePoint(ctx context.Context, amount float64) (int, error)
 }
 
 func (pointService PointService) TotalPoint(ctx context.Context, uid int) (TotalPoint, error) {
-	points, err := pointService.PointGateway.GetPoints(ctx, uid)
+	total, err := pointService.PointGateway.GetPointBalance(ctx, uid)
 	if err != nil {
 		slog.ErrorContext(ctx, "PointGateway.GetPoints failed",
 			"log_type", "error", "error_code", "POINT_GATEWAY_FAILED", "error_message", err.Error(), "user_id", uid)
 	}
 
-	total := 0
-	for _, point := range points {
-		total += point.Amount
-	}
-	return TotalPoint{
-		Point: total,
-	}, err
+	return total, err
 }
 
 func (pointService PointService) DeductPoint(ctx context.Context, uid int, submitedPoint SubmitedPoint) (TotalPoint, error) {
@@ -46,9 +40,10 @@ func (pointService PointService) DeductPoint(ctx context.Context, uid int, submi
 	}
 
 	point := Point{
-		OrgID:  1,
-		UserID: uid,
-		Amount: submitedPoint.Amount,
+		OrgID:   1,
+		UserID:  uid,
+		Amount:  submitedPoint.Amount,
+		OrderID: submitedPoint.OrderID,
 	}
 	_, err_ := pointService.PointGateway.CreatePoint(ctx, uid, point)
 	if err_ != nil {

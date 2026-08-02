@@ -1,84 +1,59 @@
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CreatePointDto } from '../point.dto';
-import { Point } from '../point.entity';
+import { DataSource } from 'typeorm';
+import { OrderPoint, OrderPointStatus } from '../order-point.entity';
 import { PointService } from '../point.service';
+import { PointTransaction } from '../transaction.entity';
+import { PointWallet } from '../wallet.entity';
 
 describe('PointService', () => {
   let service: PointService;
-
-  const mockPointRepository = {
-    save: jest.fn(),
-    find: jest.fn(),
-  };
+  const walletRepository = { findOne: jest.fn() };
+  const orderPointRepository = { find: jest.fn() };
+  const transactionRepository = {};
+  const dataSource = { transaction: jest.fn() };
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PointService,
         {
-          provide: getRepositoryToken(Point),
-          useValue: mockPointRepository,
+          provide: getRepositoryToken(PointWallet),
+          useValue: walletRepository,
         },
+        {
+          provide: getRepositoryToken(OrderPoint),
+          useValue: orderPointRepository,
+        },
+        {
+          provide: getRepositoryToken(PointTransaction),
+          useValue: transactionRepository,
+        },
+        { provide: DataSource, useValue: dataSource },
       ],
     }).compile();
 
     service = module.get<PointService>(PointService);
   });
 
-  it('Should be defined', () => {
-    expect(service).toBeDefined();
+  it('returns pending and approved balances for one user', async () => {
+    walletRepository.findOne.mockResolvedValue({ userId: 1, balance: 8 });
+    orderPointRepository.find.mockResolvedValue([
+      { userId: 1, pointsRemaining: 80, status: OrderPointStatus.PENDING },
+    ]);
+
+    await expect(service.getPoint(1)).resolves.toEqual({
+      point: 8,
+      pendingPoint: 80,
+      approvedPoint: 8,
+    });
+    expect(walletRepository.findOne).toHaveBeenCalledWith({
+      where: { userId: 1 },
+    });
   });
 
-  it('Create => Should create a new point and return its data', async () => {
-    // arrange
-    const createPointInput = {
-      orgId: 1,
-      userId: 1,
-      amount: 200,
-    } as CreatePointDto;
-
-    const createPointResponse = {
-      id: 1,
-      orgId: 1,
-      userId: 1,
-      amount: 200,
-      created: '2024-08-25T09:06:58',
-      updated: '2024-08-25T09:06:58',
-    } as CreatePointDto;
-
-    jest.spyOn(mockPointRepository, 'save').mockReturnValue(createPointResponse);
-
-    // act
-    const result = await service.deductPoint(createPointInput);
-
-    // assert
-    expect(mockPointRepository.save).toBeCalled();
-    expect(mockPointRepository.save).toBeCalledWith(createPointInput);
-    expect(result).toEqual(createPointResponse);
+  it('calculates one point for every 50 THB', () => {
+    expect(service.calculatePoint(4044.71)).toBe(80);
   });
-
-  it('Find => should return an array of point', async () => {
-    //arrange
-    const point = {
-      id: 2,
-      orgId: 1,
-      userId: 1,
-      amount: 300,
-      created: '2024-08-25T09:06:58',
-      updated: '2024-08-25T09:06:58',
-    };
-    const points = [point];
-
-    jest.spyOn(mockPointRepository, 'find').mockReturnValue(points);
-
-    //act
-    const result = await service.getPoint();
-
-    // assert
-    expect(result).toEqual(points);
-    expect(mockPointRepository.find).toBeCalled();
-  });
-
 });
