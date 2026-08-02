@@ -13,7 +13,7 @@ type OrderRepository interface {
 	GetNextSequence(ctx context.Context, datePrefix string, userID int) (int, error)
 	GetOrderWithTrackingNumberByOrderNumber(ctx context.Context, orderNumber int64) (OrderDetailWithTrackingNumber, error)
 	CreateOrderProduct(ctx context.Context, orderID, productID, quantity int, productPrice float64) error
-	UpdateOrderTransaction(ctx context.Context, orderID int, transactionID string) error
+	UpdateOrderTransaction(ctx context.Context, orderID int, transactionID string, otp int, refOTP string) error
 	UpdateOrderTrackingNumber(ctx context.Context, orderID int, trackingNumber string) error
 	GetOrderProduct(ctx context.Context, orderID int) ([]OrderProduct, error)
 	GetOrderProductWithPrice(ctx context.Context, orderID int) ([]OrderProductWithPrice, error)
@@ -90,9 +90,9 @@ func (orderRepository OrderRepositoryMySQL) CreateOrderProduct(ctx context.Conte
 	return err
 }
 
-func (orderRepository OrderRepositoryMySQL) UpdateOrderTransaction(ctx context.Context, orderID int, transactionID string) error {
+func (orderRepository OrderRepositoryMySQL) UpdateOrderTransaction(ctx context.Context, orderID int, transactionID string, otp int, refOTP string) error {
 	status := "paid"
-	sqlResult, err := orderRepository.DBConnection.ExecContext(ctx, "UPDATE orders SET transaction_id=? , status=? WHERE id = ?", transactionID, status, orderID)
+	sqlResult, err := orderRepository.DBConnection.ExecContext(ctx, "UPDATE orders SET transaction_id=? , status=?, otp=?, ref_otp=? WHERE id = ?", transactionID, status, otp, refOTP, orderID)
 	if err != nil {
 		return err
 	}

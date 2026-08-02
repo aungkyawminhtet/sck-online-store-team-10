@@ -149,14 +149,15 @@ func main() {
 	PDFHelper := order.OrderSummaryPDFGenerator{}
 	orderHelper := order.OrderHelper{}
 
+	pointService := point.PointService{
+		PointGateway: &pointGateway,
+	}
 	paymentService := payment.PaymentService{
 		BankGateway:       &bankGateway,
 		ShippingGateway:   &shippingGateway,
 		OrderRepository:   &orderRepository,
 		ProductRepository: productRepository,
-	}
-	pointService := point.PointService{
-		PointGateway: &pointGateway,
+		PointService:      pointService,
 	}
 	cartService := cart.CartService{
 		CartRepository: &cartRepository,
