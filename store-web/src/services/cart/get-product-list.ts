@@ -35,7 +35,16 @@ export type GetProductInCartServiceResponse = {
 const GetProductInCartService =
   async (): Promise<GetProductInCartServiceResponse> => {
     try {
-      const { data } = await axiosShoppingMallApi.get(`/api/v1/cart`)
+      const { data } = await axiosShoppingMallApi.get(`/api/v1/cart`, {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        },
+        params: {
+          _t: Date.now()
+        }
+      })
       return {
         data: data
       }

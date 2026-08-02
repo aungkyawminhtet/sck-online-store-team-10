@@ -24,8 +24,10 @@ const ShoppingCartView = ({
   const { cart, summary, getProductListInCart } = useOrderStore()
 
   useEffect(() => {
-    getProductListInCart()
-  }, [getProductListInCart])
+    if (openShoppingCart) {
+      getProductListInCart()
+    }
+  }, [getProductListInCart, openShoppingCart])
 
   return (
     <Transition.Root show={openShoppingCart} as={Fragment}>

@@ -44,7 +44,7 @@ export type SubDistrictType = {
 }
 
 const ShippingInformation = () => {
-  const { setShippingInformation } = useOrderStore((state) => state)
+  const { setShippingInformation, errors, setErrors } = useOrderStore((state) => state)
 
   const [provinceList] = useState<ProvinceType[]>(PROVINCE_LIST)
   const [districtList, setDistrictList] = useState<DistrictType[]>([])
@@ -65,39 +65,40 @@ const ShippingInformation = () => {
   })
 
   const handleInputFocus = ({ target }: React.FocusEvent<HTMLInputElement>) => {
-    setAddressInfo({
+    const newAddressInfo = {
       ...addressInfo,
       focused: target.name
-    })
+    }
+    setAddressInfo(newAddressInfo)
 
     // Save Shipping Information on Checkout Store
-    setShippingInformation(addressInfo)
+    setShippingInformation(newAddressInfo)
   }
 
   const handleAddressInputChange = ({
     target
   }: React.ChangeEvent<HTMLInputElement>) => {
+    const newAddressInfo = { ...addressInfo }
     if (target.name === 'firstName') {
-      setAddressInfo({ ...addressInfo, firstName: target.value })
+      newAddressInfo.firstName = target.value
     } else if (target.name === 'lastName') {
-      setAddressInfo({
-        ...addressInfo,
-        lastName: target.value
-      })
+      newAddressInfo.lastName = target.value
     } else if (target.name === 'address') {
-      setAddressInfo({
-        ...addressInfo,
-        address: target.value
-      })
+      newAddressInfo.address = target.value
     } else if (target.name === 'mobileNumber') {
-      setAddressInfo({
-        ...addressInfo,
-        mobileNumber: target.value
-      })
+      newAddressInfo.mobileNumber = target.value
     }
 
-    // Save Shipping Information on Checkout Store
-    setShippingInformation(addressInfo)
+    setAddressInfo(newAddressInfo)
+    setShippingInformation(newAddressInfo)
+
+    // Clear error locally on type
+    if (errors[target.name as keyof typeof errors]) {
+      setErrors({
+        ...errors,
+        [target.name]: ''
+      })
+    }
   }
 
   const handleAddressSelectChange = (selected: {
@@ -171,40 +172,70 @@ const ShippingInformation = () => {
       <Header3>Shipping information</Header3>
 
       <div className="grid gap-6 mb-2 md:grid-cols-2">
-        <InputField
-          id="shipping-form-first-name"
-          label="First name"
-          type="text"
-          name="firstName"
-          placeholder="first name"
-          required
-          onChange={handleAddressInputChange}
-          onFocus={handleInputFocus}
-        />
+        <div>
+          <InputField
+            id="shipping-form-first-name"
+            label="First name"
+            type="text"
+            name="firstName"
+            placeholder="first name"
+            required
+            onChange={handleAddressInputChange}
+            onFocus={handleInputFocus}
+          />
+          {errors.firstName && (
+            <span
+              id="shipping-first-name-error-txt"
+              className="text-[10px] font-light text-red-500 mt-1 block"
+            >
+              {errors.firstName}
+            </span>
+          )}
+        </div>
 
-        <InputField
-          id="shipping-form-last-name"
-          label="Last name"
-          type="text"
-          name="lastName"
-          placeholder="last name"
-          required
-          onChange={handleAddressInputChange}
-          onFocus={handleInputFocus}
-        />
+        <div>
+          <InputField
+            id="shipping-form-last-name"
+            label="Last name"
+            type="text"
+            name="lastName"
+            placeholder="last name"
+            required
+            onChange={handleAddressInputChange}
+            onFocus={handleInputFocus}
+          />
+          {errors.lastName && (
+            <span
+              id="shipping-last-name-error-txt"
+              className="text-[10px] font-light text-red-500 mt-1 block"
+            >
+              {errors.lastName}
+            </span>
+          )}
+        </div>
       </div>
 
-      <InputField
-        id="shipping-form-address"
-        label="Address (Building, Street, etc.)"
-        type="text"
-        name="address"
-        placeholder="address"
-        required
-        maxLength={150}
-        onChange={handleAddressInputChange}
-        onFocus={handleInputFocus}
-      />
+      <div className="mb-2">
+        <InputField
+          id="shipping-form-address"
+          label="Address (Building, Street, etc.)"
+          type="text"
+          name="address"
+          placeholder="address"
+          required
+          maxLength={150}
+          onChange={handleAddressInputChange}
+          onFocus={handleInputFocus}
+        />
+        {errors.address && (
+          <span
+            id="shipping-address-error-txt"
+            className="text-[10px] font-light text-red-500 mt-1 block"
+          >
+            {errors.address}
+          </span>
+        )}
+      </div>
 
       <ShippingDropdownList
         id="shipping-form-province"
@@ -242,17 +273,27 @@ const ShippingInformation = () => {
         disabled
       />
 
-      <InputField
-        id="shipping-form-mobile"
-        label="Mobile number (For Contact)"
-        type="tel"
-        name="mobileNumber"
-        placeholder="0923456789"
-        maxLength={10}
-        onChange={handleAddressInputChange}
-        onFocus={handleInputFocus}
-        required
-      />
+      <div className="mt-2">
+        <InputField
+          id="shipping-form-mobile"
+          label="Mobile number (For Contact)"
+          type="tel"
+          name="mobileNumber"
+          placeholder="0923456789"
+          maxLength={10}
+          onChange={handleAddressInputChange}
+          onFocus={handleInputFocus}
+          required
+        />
+        {errors.mobileNumber && (
+          <span
+            id="shipping-mobile-error-txt"
+            className="text-[10px] font-light text-red-500 mt-1 block"
+          >
+            {errors.mobileNumber}
+          </span>
+        )}
+      </div>
     </div>
   )
 }

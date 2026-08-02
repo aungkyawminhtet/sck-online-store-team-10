@@ -52,6 +52,20 @@ type PaymentType = {
   paymentCreditInformation: PaymentCreditInformationType
 }
 
+type CheckoutErrorsType = {
+  firstName?: string
+  lastName?: string
+  address?: string
+  mobileNumber?: string
+  provinceName?: string
+  districtName?: string
+  subDistrictName?: string
+  cardName?: string
+  cardNumber?: string
+  cardExpiry?: string
+  cardCvv?: string
+}
+
 type OrderSummaryType = {
   total_price: number
   total_price_thb: number
@@ -69,7 +83,7 @@ type OrderStoreType = {
   shipping: ShippingType
   point: PointType
   payment: PaymentType
-  getProductListInCart: () => void
+  getProductListInCart: (updatedCartData?: any) => void
   setPoint: (point: number) => void
   setIsUsePoint: (isUsePoint: boolean) => void
   setPaymentMethod: (paymentMethod: string) => void
@@ -79,6 +93,10 @@ type OrderStoreType = {
   setShippingMethod: (shippingMethod: number, shippingFee: number) => void
   setShippingInformation: (shippingInformation: ShippingInformationType) => void
   updateSummary: () => void
+  updateCartItemQuantityLocal: (productId: number, quantity: number) => void
+  removeCartItemLocal: (productId: number) => void
+  errors: CheckoutErrorsType
+  setErrors: (errors: CheckoutErrorsType) => void
 }
 
 const useOrderStore = create<OrderStoreType>()(
@@ -128,31 +146,47 @@ const useOrderStore = create<OrderStoreType>()(
         focused: ''
       }
     },
-    getProductListInCart: async () => {
+    errors: {},
+    setErrors: (errors) => {
+      set(
+        produce((state) => {
+          state.errors = errors
+        })
+      )
+    },
+    getProductListInCart: async (updatedCartData?: any) => {
       // Mock userId
-      const productInCart = await GetProductInCartService()
+      const productInCart = updatedCartData
+        ? { data: updatedCartData }
+        : await GetProductInCartService()
 
-      if (productInCart.data) {
-        // const price = productInCart.data.map((item) => {
-        //   return {
-        //     price: item.product_price_thb,
-        //     quantity: item.quantity
-        //   }
-        // })
-
-        // const total = priceCalculate.subTotal(price)
-
-        set(
-          produce((state) => {
-            state.totalProduct = productInCart.data?.carts.length
-            state.cart = productInCart.data?.carts
-            state.summary = productInCart.data?.summary
-
-            state.subTotal = productInCart.data?.summary.total_price_thb
-            state.totalPayment = productInCart.data?.summary.total_price_thb
-          })
-        )
-      }
+      set(
+        produce((state) => {
+          if (productInCart.data) {
+            state.totalProduct = productInCart.data.carts?.length || 0
+            state.cart = productInCart.data.carts || []
+            state.summary = productInCart.data.summary || {
+              total_price: 0,
+              total_price_thb: 0,
+              total_price_full_thb: 0,
+              receive_point: 0
+            }
+            state.subTotal = state.summary.total_price_thb
+            state.totalPayment = state.summary.total_price_thb
+          } else {
+            state.totalProduct = 0
+            state.cart = []
+            state.summary = {
+              total_price: 0,
+              total_price_thb: 0,
+              total_price_full_thb: 0,
+              receive_point: 0
+            }
+            state.subTotal = 0
+            state.totalPayment = 0
+          }
+        })
+      )
 
       // Reset Discount Point
       set(
@@ -221,7 +255,8 @@ const useOrderStore = create<OrderStoreType>()(
       const point = get().point.point
 
       const subTotal = get().summary.total_price_thb
-      const shippingFee = get().shipping.shippingFee
+      const cart = get().cart
+      const shippingFee = !cart || cart.length === 0 ? 0 : get().shipping.shippingFee
 
       // priceCalculate Point
       const pointsUsed = isUsePoint
@@ -240,7 +275,6 @@ const useOrderStore = create<OrderStoreType>()(
 
       // Point Receive
       let receivePoint = 0
-      const cart = get().cart
       if (cart) {
         cart.forEach((item) => {
           receivePoint += Math.floor((item.product_price_thb * item.quantity) / 50)
@@ -254,6 +288,42 @@ const useOrderStore = create<OrderStoreType>()(
           state.point.burnPoint = pointsUsed
         })
       )
+    },
+    updateCartItemQuantityLocal: (productId: number, quantity: number) => {
+      set(
+        produce((state) => {
+          const item = state.cart.find((c: any) => c.product_id === productId)
+          if (item) {
+            item.quantity = quantity
+          }
+          // Recalculate summary.total_price_thb based on new quantities
+          let total = 0
+          state.cart.forEach((c: any) => {
+            total += c.product_price_thb * c.quantity
+          })
+          state.summary.total_price_thb = total
+          state.subTotal = total
+          state.totalPayment = total
+        })
+      )
+      get().updateSummary()
+    },
+    removeCartItemLocal: (productId: number) => {
+      set(
+        produce((state) => {
+          state.cart = state.cart.filter((c: any) => c.product_id !== productId)
+          state.totalProduct = state.cart.length
+          // Recalculate summary.total_price_thb based on remaining items
+          let total = 0
+          state.cart.forEach((c: any) => {
+            total += c.product_price_thb * c.quantity
+          })
+          state.summary.total_price_thb = total
+          state.subTotal = total
+          state.totalPayment = total
+        })
+      )
+      get().updateSummary()
     }
   }))
 )

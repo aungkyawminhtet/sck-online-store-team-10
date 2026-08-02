@@ -11,3 +11,7 @@ databaseChangeLog:
   - include:
       file: changelogs/004-fix-order-number-concurrency.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changelogs/005-add-otp-to-orders.yaml
+      relativeToChangelogFile: true
+

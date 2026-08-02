@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-add-otp-to-orders
+      author: developer
+      description: Add otp and ref_otp columns to orders table
+      changes:
+        - addColumn:
+            tableName: orders
+            columns:
+              - column:
+                  name: otp
+                  type: INT
+                  defaultValueNumeric: 0
+              - column:
+                  name: ref_otp
+                  type: VARCHAR(255)
+                  defaultValue: ""
+      rollback:
+        - dropColumn:
+            tableName: orders
+            columnName: otp
+        - dropColumn:
+            tableName: orders
+            columnName: ref_otp

@@ -75,7 +75,7 @@ func Test_ConfirmPayment_Input_OrderNumber_2603159522001_Should_Be_Return_Tracki
 	mockProductRepository := new(mockProductRepository)
 	mockProductRepository.On("UpdateStock", mock.Anything, 2, 2).Return(nil)
 
-	mockOrderRepository.On("UpdateOrderTransaction", mock.Anything, oid, "TRANSACTION_ID").Return(nil)
+	mockOrderRepository.On("UpdateOrderTransaction", mock.Anything, oid, "TRANSACTION_ID", 123456, "REF_OTP").Return(nil)
 
 	mockShippingGateway := new(mockShippingGateway)
 	mockShippingGateway.On("GetTrackingNumber", mock.Anything, shipping.ShippingGatewaySubmit{
@@ -430,7 +430,7 @@ func Test_ConfirmPayment_Input_OrderNumber_2603159522179_Should_Be_Return_OrderR
 	mockProductRepository := new(mockProductRepository)
 	mockProductRepository.On("UpdateStock", mock.Anything, 2, 2).Return(nil)
 
-	mockOrderRepository.On("UpdateOrderTransaction", mock.Anything, oid, "TRANSACTION_ID").Return(errors.New("UpdateOrderTransaction Error"))
+	mockOrderRepository.On("UpdateOrderTransaction", mock.Anything, oid, "TRANSACTION_ID", 123456, "REF_OTP").Return(errors.New("UpdateOrderTransaction Error"))
 
 	paymentService := payment.PaymentService{
 		BankGateway:       mockBankGateway,
@@ -506,7 +506,7 @@ func Test_ConfirmPayment_Input_OrderNumber_2603159533899_Should_Be_Return_Shippi
 	mockProductRepository := new(mockProductRepository)
 	mockProductRepository.On("UpdateStock", mock.Anything, 2, 2).Return(nil)
 
-	mockOrderRepository.On("UpdateOrderTransaction", mock.Anything, oid, "TRANSACTION_ID").Return(nil)
+	mockOrderRepository.On("UpdateOrderTransaction", mock.Anything, oid, "TRANSACTION_ID", 123456, "REF_OTP").Return(nil)
 
 	mockShippingGateway := new(mockShippingGateway)
 	mockShippingGateway.On("GetTrackingNumber", mock.Anything, shipping.ShippingGatewaySubmit{

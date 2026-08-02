@@ -27,7 +27,7 @@ const ProductItem = ({
   isHiddenLable = false
 }: ProductItemProps) => {
   const [newQuantity, setNewQuantity] = useState(quantity)
-  const { getProductListInCart } = useOrderStore()
+  const { getProductListInCart, updateCartItemQuantityLocal, removeCartItemLocal } = useOrderStore()
 
   const handleQuantityChange = (e: { target: { value: string } }) => {
     if (isNumber(e.target.value)) {
@@ -49,7 +49,7 @@ const ProductItem = ({
   }
 
   const incrementQuantity = () => {
-    const incrementQty = quantity + 1
+    const incrementQty = newQuantity + 1
     if (incrementQty <= stock) {
       setNewQuantity(incrementQty)
       updateQuantity(incrementQty)
@@ -57,7 +57,7 @@ const ProductItem = ({
   }
 
   const decrementQuantity = () => {
-    const decrementQty = quantity - 1
+    const decrementQty = newQuantity - 1
     if (decrementQty >= 1) {
       setNewQuantity(decrementQty)
       updateQuantity(decrementQty)
@@ -65,7 +65,8 @@ const ProductItem = ({
   }
 
   const updateQuantity = async (qty: number) => {
-    setNewQuantity(qty)
+    // Optimistically update local store
+    updateCartItemQuantityLocal(product_id, qty)
 
     const result = await updateProductInCartService({
       productId: product_id,
@@ -74,8 +75,10 @@ const ProductItem = ({
 
     if (result.data) {
       // Update Cart
-      getProductListInCart()
+      getProductListInCart(result.data)
     } else if (result.message) {
+      // Revert local store & input display state on failure
+      updateCartItemQuantityLocal(product_id, quantity)
       setNewQuantity(quantity)
       alert('Cannot update quantity, ' + result.message)
     }
@@ -83,18 +86,20 @@ const ProductItem = ({
 
   const handleRemoveItem = async () => {
     if (window.confirm('Do you want to remove "' + product_name + '"?,')) {
+      // Optimistically remove from local store
+      removeCartItemLocal(product_id)
+
       const result = await updateProductInCartService({
         productId: product_id,
         quantity: 0
       })
 
       if (result.data) {
-        // Get Cart Service
-        alert('Remove item success')
-
         // Get Services for update Product List in cart
-        getProductListInCart()
+        getProductListInCart(result.data)
       } else if (result.message) {
+        // Revert local store state on failure
+        getProductListInCart()
         alert('Cannot remove item, ' + result.message)
       }
     }

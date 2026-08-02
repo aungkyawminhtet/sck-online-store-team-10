@@ -7,7 +7,7 @@ import useOrderStore from '@/hooks/use-order-store'
 // ----------------------------------------------------------------------
 
 const OrderSummary = () => {
-  const { summary, totalPayment, receivePoint, shipping } = useOrderStore(
+  const { summary, totalPayment, receivePoint, shipping, cart } = useOrderStore(
     (state) => state
   )
   return (
@@ -31,7 +31,7 @@ const OrderSummary = () => {
         <SummaryText
           id="order-summary-shipping-fee"
           text="Shipping Fee"
-          value={shipping.shippingFee}
+          value={!cart || cart.length === 0 ? 0 : shipping.shippingFee}
         />
         {/* <SummaryText
           id="order-summary-point-discount"

@@ -77,8 +77,8 @@ func (repo *mockOrderRepository) CreateShipping(ctx context.Context, userID int,
 	return argument.Int(0), argument.Error(1)
 }
 
-func (repo *mockOrderRepository) UpdateOrderTransaction(ctx context.Context, orderID int, transactionID string) error {
-	argument := repo.Called(ctx, orderID, transactionID)
+func (repo *mockOrderRepository) UpdateOrderTransaction(ctx context.Context, orderID int, transactionID string, otp int, refOTP string) error {
+	argument := repo.Called(ctx, orderID, transactionID, otp, refOTP)
 	return argument.Error(0)
 }
 
