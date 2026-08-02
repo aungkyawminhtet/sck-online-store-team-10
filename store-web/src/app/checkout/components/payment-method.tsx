@@ -41,7 +41,7 @@ const PaymentMethod = () => {
     focused: ''
   })
 
-  const { setPaymentInformation } = useOrderStore((state) => state)
+  const { setPaymentInformation, errors, setErrors } = useOrderStore((state) => state)
 
   const handlePaymentMethodChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -50,40 +50,60 @@ const PaymentMethod = () => {
   }
 
   const handleInputFocus = ({ target }: React.FocusEvent<HTMLInputElement>) => {
-    setCardInfo({
+    const newCardInfo = {
       ...cardInfo,
       focused: target.name
-    })
-
-    setPaymentInformation(cardInfo)
+    }
+    setCardInfo(newCardInfo)
+    setPaymentInformation(newCardInfo)
   }
 
   const handleCardNumberChange = ({
     target
   }: React.ChangeEvent<HTMLInputElement>) => {
+    const newCardInfo = { ...cardInfo }
     if (target.name === 'fullname') {
-      setCardInfo({ ...cardInfo, name: target.value })
+      newCardInfo.name = target.value
     } else if (target.name === 'number') {
+      let provider = ''
       if (target.value.startsWith('5')) {
+        provider = CreditCardProvider.MASTERCARD
         setCardProvider(CreditCardProvider.MASTERCARD)
-        setCardInfo({ ...cardInfo, issuer: CreditCardProvider.MASTERCARD })
-      }
-
-      if (target.value.startsWith('4')) {
+      } else if (target.value.startsWith('4')) {
+        provider = CreditCardProvider.VISA;
         setCardProvider(CreditCardProvider.VISA)
+      } else {
+        setCardProvider('')
       }
 
       target.value = formatCreditCardNumber(target.value)
-      setCardInfo({ ...cardInfo, number: target.value, issuer: cardProvider })
+      newCardInfo.number = target.value
+      newCardInfo.issuer = provider
     } else if (target.name === 'expiry') {
       target.value = formatExpirationDate(target.value)
-      setCardInfo({ ...cardInfo, expiry: target.value })
+      newCardInfo.expiry = target.value
     } else if (target.name === 'cvv') {
       target.value = formatCVV(target.value)
-      setCardInfo({ ...cardInfo, cvv: target.value })
+      newCardInfo.cvv = target.value
     }
 
-    setPaymentInformation(cardInfo)
+    setCardInfo(newCardInfo)
+    setPaymentInformation(newCardInfo)
+
+    // Clear local error on change
+    const fieldMap: Record<string, string> = {
+      fullname: 'cardName',
+      number: 'cardNumber',
+      expiry: 'cardExpiry',
+      cvv: 'cardCvv'
+    }
+    const errorKey = fieldMap[target.name]
+    if (errorKey && errors[errorKey as keyof typeof errors]) {
+      setErrors({
+        ...errors,
+        [errorKey]: ''
+      })
+    }
   }
 
   return (
@@ -110,15 +130,25 @@ const PaymentMethod = () => {
           </label>
 
           <div className={paymentMethod === 1 ? 'mt-5' : 'hidden'}>
-            <InputField
-              id={`payment-credit-form-fullname`}
-              type="text"
-              label="Name on card"
-              name="fullname"
-              placeholder="John Smith"
-              onChange={handleCardNumberChange}
-              onFocus={handleInputFocus}
-            />
+            <div className="mb-3">
+              <InputField
+                id={`payment-credit-form-fullname`}
+                type="text"
+                label="Name on card"
+                name="fullname"
+                placeholder="John Smith"
+                onChange={handleCardNumberChange}
+                onFocus={handleInputFocus}
+              />
+              {errors.cardName && (
+                <span
+                  id="payment-card-name-error-txt"
+                  className="text-[10px] font-light text-red-500 mt-1 block"
+                >
+                  {errors.cardName}
+                </span>
+              )}
+            </div>
 
             <div className="mb-3 -mx-2 flex items-center">
               <div className="px-2 w-3/4">
@@ -133,6 +163,14 @@ const PaymentMethod = () => {
                   onChange={handleCardNumberChange}
                   onFocus={handleInputFocus}
                 />
+                {errors.cardNumber && (
+                  <span
+                    id="payment-card-number-error-txt"
+                    className="text-[10px] font-light text-red-500 mt-1 block"
+                  >
+                    {errors.cardNumber}
+                  </span>
+                )}
               </div>
               <div className="px-2 w-1/4">
                 <div
@@ -161,7 +199,7 @@ const PaymentMethod = () => {
               </div>
             </div>
 
-            <div className="mb-3 -mx-2 flex items-end">
+            <div className="mb-3 -mx-2 flex items-start">
               <div className="px-2 w-1/3">
                 <InputField
                   id={`payment-credit-form-expiry`}
@@ -172,6 +210,14 @@ const PaymentMethod = () => {
                   onChange={handleCardNumberChange}
                   onFocus={handleInputFocus}
                 />
+                {errors.cardExpiry && (
+                  <span
+                    id="payment-card-expiry-error-txt"
+                    className="text-[10px] font-light text-red-500 mt-1 block"
+                  >
+                    {errors.cardExpiry}
+                  </span>
+                )}
               </div>
               <div className="px-2 w-1/3">
                 <InputField
@@ -183,6 +229,14 @@ const PaymentMethod = () => {
                   onChange={handleCardNumberChange}
                   onFocus={handleInputFocus}
                 />
+                {errors.cardCvv && (
+                  <span
+                    id="payment-card-cvv-error-txt"
+                    className="text-[10px] font-light text-red-500 mt-1 block"
+                  >
+                    {errors.cardCvv}
+                  </span>
+                )}
               </div>
             </div>
           </div>

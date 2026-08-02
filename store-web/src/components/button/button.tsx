@@ -24,9 +24,9 @@ const Button = (props: InputFieldProps) => {
   }
 
   if (color === 'primary') {
-    customClassName += ' bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500'
+    customClassName += ' bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed'
   } else {
-    customClassName += ' bg-gray-300 text-black hover:bg-gray-400 focus:ring-gray-500'
+    customClassName += ' bg-gray-300 text-black hover:bg-gray-400 focus:ring-gray-500 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed'
   }
 
   return (
