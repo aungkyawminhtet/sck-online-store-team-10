@@ -2,6 +2,8 @@
 
 import { ShoppingCartIcon } from '@heroicons/react/24/outline'
 
+import { useEffect } from 'react'
+
 import Badge from '@/components/badge'
 import useOrderStore from '@/hooks/use-order-store'
 import { HeaderProps } from '@/layouts/common/header'
@@ -9,7 +11,11 @@ import { HeaderProps } from '@/layouts/common/header'
 // ---------------------------------------------------
 
 const Cart = ({ setShoppingCartOpen }: HeaderProps) => {
-  const totalProduct = useOrderStore((state) => state.totalProduct)
+  const { totalProduct, getProductListInCart } = useOrderStore()
+
+  useEffect(() => {
+    getProductListInCart()
+  }, [getProductListInCart])
 
   return (
     <button

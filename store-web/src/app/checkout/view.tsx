@@ -25,10 +25,35 @@ const CheckoutView = () => {
     point,
     payment,
     summary,
-    totalPayment
+    totalPayment,
+    errors,
+    setErrors
   } = useOrderStore()
 
   const submitPaymentOrder = async () => {
+    // Validate forms
+    const newErrors: any = {}
+    const { firstName, lastName, address, mobileNumber } = shipping.shippingInformation
+
+    if (!firstName?.trim()) newErrors.firstName = 'First name is required'
+    if (!lastName?.trim()) newErrors.lastName = 'Last name is required'
+    if (!address?.trim()) newErrors.address = 'Address is required'
+    if (!mobileNumber?.trim()) newErrors.mobileNumber = 'Mobile number is required'
+
+    if (payment.paymentMethod === 1) {
+      const { name, number, expiry, cvv } = payment.paymentCreditInformation
+      if (!name?.trim()) newErrors.cardName = 'Name on card is required'
+      if (!number?.trim()) newErrors.cardNumber = 'Card number is required'
+      if (!expiry?.trim()) newErrors.cardExpiry = 'Expiration date is required'
+      if (!cvv?.trim()) newErrors.cardCvv = 'Security code is required'
+    }
+
+    setErrors(newErrors)
+
+    if (Object.keys(newErrors).length > 0) {
+      return
+    }
+
     const cartList: CartType[] = []
 
     cart.map((item) => {
@@ -95,6 +120,7 @@ const CheckoutView = () => {
                   type="button"
                   onClick={submitPaymentOrder}
                   isblock="true"
+                  disabled={!cart || cart.length === 0}
                 >
                   PAY NOW
                 </Button>
