@@ -20,9 +20,9 @@ ${DOWNLOAD_DIR}    ${CURDIR}${/}..${/}temp_downloads
     เข้าสู่เว็บไซต์ และตรวจสอบว่า redirect มาที่    /auth/login    login-page
     เข้าสู่ระบบ    login-username-input    user_2    login-password-input    P@ssw0rd
     เลือกดูสินค้า    product-card-name-1    Balance Training Bicycle
-    ตรวจสอบรายละเอียดสินค้า    Balance Training Bicycle    SportsFun    4,314.60    43
+    ตรวจสอบรายละเอียดสินค้า    Balance Training Bicycle    SportsFun    4,020.72    80
     เพิ่มสินค้าลงตะกร้า
-    ตรวจสอบข้อมูลสินค้าในตะกร้า และ Checkout    Balance Training Bicycle    SportsFun    4,314.60    43    4,314.60
+    ตรวจสอบข้อมูลสินค้าในตะกร้า และ Checkout    Balance Training Bicycle    SportsFun    4,020.72    80    4,020.72
     ใส่ที่อยู่จัดส่งสินค้า    
     ...    ณัฐพล    ศรีสมบัติ    
     ...    43/8 หมู่บ้านเปี่ยมสุข ถนนลาดพร้าว ซอย 63    กรุงเทพมหานคร
@@ -31,22 +31,25 @@ ${DOWNLOAD_DIR}    ${CURDIR}${/}..${/}temp_downloads
     เลือกวิธีจัดส่งสินค้าเป็น    kerry
     ตรวจสอบค่าจัดส่งสินค้าของ Kerry เท่ากันกับ 50.00 บาท    kerry    50.00
     เลือกช่องทางการชำระเงินแบบ VISA Credit Card    Nattapon Srisombat    5123 4500 0000 0008    01/39    100
-    ตรวจสอบราคารวมที่ต้องชำระเงิน ต้องเท่ากันกับ    4,364.60
+    ตรวจสอบราคารวมที่ต้องชำระเงิน ต้องเท่ากันกับ    4,070.72
     ยืนยัน OTP
     ตรวจสอบหมายเลขพัสดุว่าต้องขึ้นต้นด้วย    KR
     กดดาวน์โหลดไฟล์
     ตรวขสอบข้อมูลในไฟล์ PDF    Emily    Thompson    KR    credit
-    ...    SportsFun    Balance Training Bicycle    4,314.60    1    4,314.60
-    ...    4,314.60    kerry    4,364.60    43
+    ...    SportsFun    Balance Training Bicycle    4,020.72    1    4,020.72
+    ...    4,020.72    kerry    4,070.72    80
 
 *** Keywords ***
 Setup Folder For Download
     Create Directory    ${DOWNLOAD_DIR} 
-    Empty Directory     ${DOWNLOAD_DIR}
+    Run Keyword And Ignore Error    Close PDF
+    Close All Browsers
+    Wait Until Keyword Succeeds    15 sec    1 sec    Empty Directory    ${DOWNLOAD_DIR}
 
 Cleanup Download Folder
-    Empty Directory    ${DOWNLOAD_DIR}
+    Run Keyword And Ignore Error    Close PDF
     Close All Browsers
+    Wait Until Keyword Succeeds    15 sec    1 sec    Empty Directory    ${DOWNLOAD_DIR}
 
 เข้าสู่เว็บไซต์ และตรวจสอบว่า redirect มาที่
     [Arguments]    ${target-url}    ${target-element-locator}

@@ -19,18 +19,18 @@ ${DOWNLOAD_DIR}    ${CURDIR}${/}..${/}temp_downloads
     เข้าสู่เว็บไซต์ และตรวจสอบว่า redirect มาที่    /auth/login    login-page
     เข้าสู่ระบบ    login-username-input    user_3    login-password-input    P@ssw0rd
     เลือกดูสินค้า    product-card-name-1    Balance Training Bicycle
-    ตรวจสอบรายละเอียดสินค้า    Balance Training Bicycle    SportsFun    4,314.60    43
+    ตรวจสอบรายละเอียดสินค้า    Balance Training Bicycle    SportsFun    4,020.72    80
     เพิ่มสินค้าลงตะกร้าและมีสินค้าจำนวน    1
     กลับไปที่หน้า homepage
     เลือกดูสินค้า    product-card-name-2    43 Piece dinner Set
     เพิ่มสินค้าลงตะกร้าและมีสินค้าจำนวน    2
     เพิ่มสินค้าลงตะกร้าและมีสินค้าจำนวน    2
     
-    ${product1}=    Create Dictionary    id=1    brand=SportsFun    name=Balance Training Bicycle    points=43    price=4,314.60    qty=1
-    ${product2}=    Create Dictionary    id=2    brand=CoolKidz     name=43 Piece dinner Set       points=9    price=931.62      qty=2
+    ${product1}=    Create Dictionary    id=1    brand=SportsFun    name=Balance Training Bicycle    points=80    price=4,020.72    qty=1
+    ${product2}=    Create Dictionary    id=2    brand=CoolKidz     name=43 Piece dinner Set       points=17    price=868.16      qty=2
     ${product-list}=    Create List    ${product1}    ${product2}
 
-    ตรวจสอบข้อมูลรายการสินค้าในตะกร้า และ Checkout    ${product-list}    5,246.22
+    ตรวจสอบข้อมูลรายการสินค้าในตะกร้า และ Checkout    ${product-list}    4,888.89
     ใส่ที่อยู่จัดส่งสินค้า    
     ...    ณัฐพล    ศรีสมบัติ    
     ...    43/8 หมู่บ้านเปี่ยมสุข ถนนลาดพร้าว ซอย 63    กรุงเทพมหานคร
@@ -39,26 +39,29 @@ ${DOWNLOAD_DIR}    ${CURDIR}${/}..${/}temp_downloads
     เลือกวิธีจัดส่งสินค้าเป็น    kerry
     ตรวจสอบค่าจัดส่งสินค้าของ Kerry เท่ากันกับ 50.00 บาท    kerry    50.00
     เลือกช่องทางการชำระเงินแบบ VISA Credit Card    Nattapon Srisombat    5123 4500 0000 0008    01/39    100
-    ตรวจสอบราคารวมที่ต้องชำระเงิน ต้องเท่ากันกับ    5,296.22
+    ตรวจสอบราคารวมที่ต้องชำระเงิน ต้องเท่ากันกับ    4,938.89
     ยืนยัน OTP
     ตรวจสอบหมายเลขพัสดุว่าต้องขึ้นต้นด้วย    KR
     กดดาวน์โหลดไฟล์
 
-    ${order-product1}=    Create Dictionary    id=1    brand=SportsFun    name=Balance Training Bicycle    points=43    price=4,314.60    qty=1    total=4,314.60
-    ${order-product2}=    Create Dictionary    id=2    brand=CoolKidz     name=43 Piece dinner Set       points=4    price=465.81      qty=2    total=931.62
+    ${order-product1}=    Create Dictionary    id=1    brand=SportsFun    name=Balance Training Bicycle    points=80    price=4,020.72    qty=1    total=4,020.72
+    ${order-product2}=    Create Dictionary    id=2    brand=CoolKidz     name=43 Piece dinner Set       points=4    price=434.08      qty=2    total=868.17
     ${order-product-list}=    Create List    ${order-product1}    ${order-product2}
     ตรวขสอบข้อมูลในไฟล์ PDF    Michael    James    KR    credit
     ...    ${order-product-list}
-    ...    5,246.22    thai_post    5,296.22    52
+    ...    4,888.89    thai_post    4,938.89    97
 
 *** Keywords ***
 Setup Folder For Download
     Create Directory    ${DOWNLOAD_DIR} 
-    Empty Directory     ${DOWNLOAD_DIR}
+    Run Keyword And Ignore Error    Close PDF
+    Close All Browsers
+    Wait Until Keyword Succeeds    15 sec    1 sec    Empty Directory    ${DOWNLOAD_DIR}
 
 Cleanup Download Folder
-    Empty Directory    ${DOWNLOAD_DIR}
+    Run Keyword And Ignore Error    Close PDF
     Close All Browsers
+    Wait Until Keyword Succeeds    15 sec    1 sec    Empty Directory    ${DOWNLOAD_DIR}
 
 เข้าสู่เว็บไซต์ และตรวจสอบว่า redirect มาที่
     [Arguments]    ${target-url}    ${target-element-locator}
@@ -139,7 +142,7 @@ Configure Local Browser Options
 เพิ่มสินค้าลงตะกร้าและมีสินค้าจำนวน
     [Arguments]    ${cart-qty}
     Click Button    id:product-detail-add-to-cart-btn
-    Wait Until Element Contains    id:header-menu-cart-badge    ${cart-qty}
+    Wait Until Element Contains    id:header-menu-cart-badge    ${cart-qty}    timeout=10s
 
 กลับไปที่หน้า homepage
     Click Element    id:header-logo-image

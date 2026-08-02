@@ -13,3 +13,4 @@ type Point struct {
 type TotalPoint struct {
 	Point int `json:"point"`
 }
+
