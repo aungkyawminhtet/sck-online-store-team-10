@@ -85,7 +85,7 @@ const ProductContent = (product: ProductDetailType) => {
         size="md"
         className="text-sm font-medium tracking-tight text-gray-400"
       >
-        {`${converNumber(receiptPoint(product.product_price_thb))} Points`}
+        {`${converNumber(receiptPoint(product.product_price_thb * quantity))} Points`}
       </Text>
 
       <form className="mt-6">

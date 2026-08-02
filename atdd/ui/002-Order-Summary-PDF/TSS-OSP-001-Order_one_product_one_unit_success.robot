@@ -36,8 +36,8 @@ ${DOWNLOAD_DIR}    ${CURDIR}${/}..${/}temp_downloads
     ตรวจสอบหมายเลขพัสดุว่าต้องขึ้นต้นด้วย    KR
     กดดาวน์โหลดไฟล์
     ตรวขสอบข้อมูลในไฟล์ PDF    Emily    Thompson    KR    credit
-    ...    SportsFun    Balance Training Bicycle    4,020.72    1    4,020.72
-    ...    4,020.72    kerry    4,070.72    80
+    ...    SportsFun    Balance Training Bicycle    4,314.60    1    4,314.60
+    ...    4,314.60    kerry    4,364.60    43
 
 *** Keywords ***
 Setup Folder For Download

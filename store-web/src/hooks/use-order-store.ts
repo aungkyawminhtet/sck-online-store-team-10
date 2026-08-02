@@ -239,7 +239,13 @@ const useOrderStore = create<OrderStoreType>()(
       const totalWithOutShipping = totalPayment - shippingFee
 
       // Point Receive
-      const receivePoint = pointCalulate.receiptPoint(totalWithOutShipping)
+      let receivePoint = 0
+      const cart = get().cart
+      if (cart) {
+        cart.forEach((item) => {
+          receivePoint += Math.floor((item.product_price_thb * item.quantity) / 50)
+        })
+      }
 
       set(
         produce((state) => {
