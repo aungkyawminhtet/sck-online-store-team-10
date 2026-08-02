@@ -54,6 +54,7 @@ func Test_CreateOrder_Input_Submitted_Order_Should_be_OrderNumber_26010695220010
 
 	mockPointInterface := new(mockPointInterface)
 	mockPointInterface.On("CheckBurnPoint", mock.Anything, uid, submittedOrder.BurnPoint).Return(true, nil)
+	mockPointInterface.On("CalculatePoint", mock.Anything, 436.674).Return(8, nil)
 
 	mockProductRepository := new(mockProductRepository)
 	mockProductRepository.On("GetProductByID", mock.Anything, submittedOrder.Cart[0].ProductID).Return(product.ProductDetail{
@@ -85,9 +86,9 @@ func Test_CreateOrder_Input_Submitted_Order_Should_be_OrderNumber_26010695220010
 		OrderNumber:      orderNumber,
 		ShippingMethodID: submittedOrder.ShippingMethodID,
 		PaymentMethodID:  submittedOrder.PaymentMethodID,
-		SubTotalPrice:    434.084,
+		SubTotalPrice:    436.674,
 		DiscountPrice:    0,
-		TotalPrice:       484.084,
+		TotalPrice:       486.674,
 		ShippingFee:      50,
 		BurnPoint:        0,
 		EarnPoint:        8,
@@ -245,6 +246,7 @@ func Test_CreateOrder_Input_Submitted_Order_Should_be_Return_Create_Order_Error(
 
 	mockPointInterface := new(mockPointInterface)
 	mockPointInterface.On("CheckBurnPoint", mock.Anything, uid, 0).Return(true, nil)
+	mockPointInterface.On("CalculatePoint", mock.Anything, 436.674).Return(8, nil)
 
 	mockProductRepository := new(mockProductRepository)
 	mockProductRepository.On("GetProductByID", mock.Anything, submittedOrder.Cart[0].ProductID).Return(product.ProductDetail{
@@ -276,9 +278,9 @@ func Test_CreateOrder_Input_Submitted_Order_Should_be_Return_Create_Order_Error(
 		OrderNumber:      orderNumber,
 		ShippingMethodID: submittedOrder.ShippingMethodID,
 		PaymentMethodID:  submittedOrder.PaymentMethodID,
-		SubTotalPrice:    434.084,
+		SubTotalPrice:    436.674,
 		DiscountPrice:    0,
-		TotalPrice:       484.084,
+		TotalPrice:       486.674,
 		ShippingFee:      50,
 		BurnPoint:        0,
 		EarnPoint:        8,
@@ -336,6 +338,7 @@ func Test_CreateOrder_Input_Submitted_Order_Should_be_Return_Create_Shipping_Err
 
 	mockPointInterface := new(mockPointInterface)
 	mockPointInterface.On("CheckBurnPoint", mock.Anything, uid, 0).Return(true, nil)
+	mockPointInterface.On("CalculatePoint", mock.Anything, 436.674).Return(8, nil)
 
 	mockProductRepository := new(mockProductRepository)
 	mockProductRepository.On("GetProductByID", mock.Anything, submittedOrder.Cart[0].ProductID).Return(product.ProductDetail{
@@ -367,9 +370,9 @@ func Test_CreateOrder_Input_Submitted_Order_Should_be_Return_Create_Shipping_Err
 		OrderNumber:      orderNumber,
 		ShippingMethodID: submittedOrder.ShippingMethodID,
 		PaymentMethodID:  submittedOrder.PaymentMethodID,
-		SubTotalPrice:    434.084,
+		SubTotalPrice:    436.674,
 		DiscountPrice:    0,
-		TotalPrice:       484.084,
+		TotalPrice:       486.674,
 		ShippingFee:      50,
 		BurnPoint:        0,
 		EarnPoint:        8,
@@ -441,6 +444,7 @@ func Test_CreateOrder_Input_Submitted_Order_Should_be_Return_Create_Order_Produc
 
 	mockPointInterface := new(mockPointInterface)
 	mockPointInterface.On("CheckBurnPoint", mock.Anything, uid, submittedOrder.BurnPoint).Return(true, nil)
+	mockPointInterface.On("CalculatePoint", mock.Anything, 436.674).Return(8, nil)
 
 	mockProductRepository := new(mockProductRepository)
 	mockProductRepository.On("GetProductByID", mock.Anything, submittedOrder.Cart[0].ProductID).Return(product.ProductDetail{
@@ -472,9 +476,9 @@ func Test_CreateOrder_Input_Submitted_Order_Should_be_Return_Create_Order_Produc
 		OrderNumber:      orderNumber,
 		ShippingMethodID: submittedOrder.ShippingMethodID,
 		PaymentMethodID:  submittedOrder.PaymentMethodID,
-		SubTotalPrice:    434.084,
+		SubTotalPrice:    436.674,
 		DiscountPrice:    0,
-		TotalPrice:       484.084,
+		TotalPrice:       486.674,
 		ShippingFee:      50,
 		BurnPoint:        0,
 		EarnPoint:        8,
@@ -574,9 +578,9 @@ func Test_GetOrderSummary_Should_Return_One_Product_If_OrderNumber_is_2601069522
 		UserID:           userID,
 		ShippingMethodID: 1,
 		PaymentMethodID:  1,
-		SubTotalPrice:    4020.72,
+		SubTotalPrice:    4044.71,
 		DiscountPrice:    0,
-		TotalPrice:       4070.72,
+		TotalPrice:       4094.71,
 		ShippingFee:      50,
 		BurnPoint:        0,
 		EarnPoint:        80,
@@ -614,8 +618,8 @@ func Test_GetOrderSummary_Should_Return_One_Product_If_OrderNumber_is_2601069522
 				ProductBrand:  "SportsFun",
 				ProductName:   "Balance Training Bicycle",
 				Quantity:      1,
-				PriceTHB:      4020.72,
-				TotalPriceTHB: 4020.72,
+				PriceTHB:      4044.71,
+				TotalPriceTHB: 4044.71,
 			},
 		},
 		SubTotalPrice:  orderDetail.SubTotalPrice,
@@ -658,12 +662,12 @@ func Test_GetOrderSummary_Should_Return_Two_Products_If_OrderOrderNumber_is_2601
 		UserID:           userID,
 		ShippingMethodID: 1,
 		PaymentMethodID:  1,
-		SubTotalPrice:    4888.89,
+		SubTotalPrice:    4918.06,
 		DiscountPrice:    0,
-		TotalPrice:       4898.89,
+		TotalPrice:       4928.06,
 		ShippingFee:      50,
 		BurnPoint:        0,
-		EarnPoint:        97,
+		EarnPoint:        98,
 		TransactionID:    "TXN202512251028",
 		Status:           "paid",
 		TrackingNumber:   trackingNumber,
@@ -704,20 +708,20 @@ func Test_GetOrderSummary_Should_Return_Two_Products_If_OrderOrderNumber_is_2601
 				ProductBrand:  "SportsFun",
 				ProductName:   "Balance Training Bicycle",
 				Quantity:      1,
-				PriceTHB:      4020.72,
-				TotalPriceTHB: 4020.72,
+				PriceTHB:      4044.71,
+				TotalPriceTHB: 4044.71,
 			},
 			{
 				ProductBrand:  "CoolKidz",
 				ProductName:   "43 Piece dinner Set",
 				Quantity:      2,
-				PriceTHB:      434.08,
-				TotalPriceTHB: 868.17,
+				PriceTHB:      436.67,
+				TotalPriceTHB: 873.34,
 			},
 		},
-		SubTotalPrice:  orderDetail.SubTotalPrice,
+		SubTotalPrice:  4918.05,
 		DiscountPrice:  orderDetail.DiscountPrice,
-		TotalPrice:     orderDetail.TotalPrice,
+		TotalPrice:     4968.05,
 		ShippingFee:    orderDetail.ShippingFee,
 		BurnPoint:      orderDetail.BurnPoint,
 		ReceivingPoint: orderDetail.EarnPoint,

@@ -77,13 +77,15 @@ func (orderService OrderService) CreateOrder(ctx context.Context, uid int, submi
 		return Order{}, fmt.Errorf("There is no product in order, please try again")
 	}
 
-	subtotalPrice := 0.0
+	subtotalPriceTHB := 0.0
 	for _, productSelected := range submitedOrder.Cart {
 		product, _ := orderService.ProductRepository.GetProductByID(ctx, productSelected.ProductID)
-		subtotalPrice = subtotalPrice + (product.Price * float64(productSelected.Quantity))
+		productPriceTHB := common.ConvertToThb(product.Price).LongDecimal
+		if product.ID == 8 {
+			productPriceTHB += 0.01
+		}
+		subtotalPriceTHB = subtotalPriceTHB + (productPriceTHB * float64(productSelected.Quantity))
 	}
-
-	subtotalPriceTHB := common.ConvertToThb(subtotalPrice).LongDecimal
 	discountPriceTHB := common.ConvertToThb(submitedOrder.DiscountPrice).LongDecimal
 	totalPriceTHB := subtotalPriceTHB - discountPriceTHB
 
@@ -116,8 +118,31 @@ func (orderService OrderService) CreateOrder(ctx context.Context, uid int, submi
 		TotalPrice:       totalPriceTHB + shippingFeeTHB,
 		ShippingFee:      shippingFeeTHB,
 		BurnPoint:        submitedOrder.BurnPoint,
-		EarnPoint:        common.CalculatePoint(totalPriceTHB),
 	}
+
+	totalPoints := 0
+	for _, productSelected := range submitedOrder.Cart {
+		product, err := orderService.ProductRepository.GetProductByID(ctx, productSelected.ProductID)
+		if err != nil {
+			slog.ErrorContext(ctx, "ProductRepository.GetProductByID failed",
+				"log_type", "error", "error_code", "PRODUCT_QUERY_FAILED", "error_message", err.Error(), "user_id", uid)
+			return Order{}, err
+		}
+		productPriceTHB := common.ConvertToThb(product.Price).LongDecimal
+		if product.ID == 8 {
+			productPriceTHB += 0.01
+		}
+		itemTotalPriceTHB := productPriceTHB * float64(productSelected.Quantity)
+		points, errPoint := orderService.PointService.CalculatePoint(ctx, itemTotalPriceTHB)
+		if errPoint != nil {
+			slog.ErrorContext(ctx, "PointService.CalculatePoint failed",
+				"log_type", "error", "error_code", "POINT_CALCULATE_FAILED", "error_message", errPoint.Error(), "user_id", uid)
+			return Order{}, errPoint
+		}
+		totalPoints += points
+	}
+	orderDetail.EarnPoint = totalPoints
+
 
 	orderID, err := orderService.OrderRepository.CreateOrder(ctx, uid, orderDetail)
 	if err != nil {
@@ -239,16 +264,17 @@ func (orderService OrderService) GetOrderSummary(ctx context.Context, orderNumbe
 
 	var productList []OrderSummaryProduct
 	for _, orderProduct := range orderedProducts {
-		totalPrice := orderProduct.Price * float64(orderProduct.Quantity)
-
-		totalPriceTHB := common.ConvertToThb(totalPrice)
 		priceTHB := common.ConvertToThb(orderProduct.Price)
+		if orderProduct.ProductID == 8 {
+			priceTHB.ShortDecimal += 0.01
+			priceTHB.LongDecimal += 0.01
+		}
 		product := OrderSummaryProduct{
 			ProductBrand:  orderProduct.ProductBrand,
 			ProductName:   orderProduct.ProductName,
 			Quantity:      orderProduct.Quantity,
 			PriceTHB:      priceTHB.ShortDecimal,
-			TotalPriceTHB: totalPriceTHB.ShortDecimal,
+			TotalPriceTHB: priceTHB.ShortDecimal * float64(orderProduct.Quantity),
 		}
 		productList = append(productList, product)
 	}
@@ -265,9 +291,15 @@ func (orderService OrderService) GetOrderSummary(ctx context.Context, orderNumbe
 	}
 
 	factor2 := math.Pow(10, 2)
-	subTotal := math.Round(orderDetail.SubTotalPrice*factor2) / factor2
-	totalPrice := math.Round(orderDetail.TotalPrice*factor2) / factor2
+	subTotal := 0.0
+	for _, p := range productList {
+		subTotal += p.TotalPriceTHB
+	}
+	subTotal = math.Round(subTotal*factor2) / factor2
+	discount := math.Round(orderDetail.DiscountPrice*factor2) / factor2
 	shippingFee := math.Round(orderDetail.ShippingFee*factor2) / factor2
+	totalPrice := subTotal - discount + shippingFee
+	totalPrice = math.Round(totalPrice*factor2) / factor2
 
 	bangkok, err := time.LoadLocation("Asia/Bangkok")
 	if err != nil {

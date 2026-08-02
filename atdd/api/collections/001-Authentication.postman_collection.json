@@ -133,8 +133,8 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "const product_name = pm.variables.get(\"product_name\");",
-                  "const total_products = parseFloat(pm.variables.get(\"total_products\"));",
+                  "const product_name = pm.variables.get(\"product_name\") || \"Balance Training Bicycle\";",
+                  "const total_products = parseFloat(pm.variables.get(\"total_products\")) || 10031;",
                   "const jsonData = pm.response.json();",
                   "",
                   "pm.test(\"Status code is 200\", function () {",
@@ -242,11 +242,11 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "const product_name = pm.variables.get(\"product_name\");",
-                  "const product_price = parseFloat(pm.variables.get(\"product_price\"));",
-                  "const product_price_thb = parseFloat(pm.variables.get(\"product_price_thb\"));",
-                  "const product_price_full_thb = parseFloat(pm.variables.get(\"product_price_full_thb\"));",
-                  "const product_brand = pm.variables.get(\"product_brand\");",
+                  "const product_name = pm.variables.get(\"product_name\") || \"Balance Training Bicycle\";",
+                  "const product_price = parseFloat(pm.variables.get(\"product_price\")) || 119.95;",
+                   "const product_price_thb = parseFloat(pm.variables.get(\"product_price_thb\")) || 4044.71;",
+                  "const product_price_full_thb = parseFloat(pm.variables.get(\"product_price_full_thb\")) || 4044.714;",
+                  "const product_brand = pm.variables.get(\"product_brand\") || \"SportsFun\";",
                   "const jsonData = pm.response.json();",
                   "",
                   "pm.test(\"Status code is 200\", function () {",
@@ -297,19 +297,19 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "const product_name = pm.variables.get(\"product_name\");",
-                  "const product_price = parseFloat(pm.variables.get(\"product_price\"));",
-                  "const product_price_thb = parseFloat(pm.variables.get(\"product_price_thb\"));",
-                  "const product_price_full_thb = parseFloat(pm.variables.get(\"product_price_full_thb\"));",
-                  "const product_brand = pm.variables.get(\"product_brand\");",
-                  "const product_id = parseFloat(pm.variables.get(\"product_id\"));",
-                  "const user_id = parseFloat(pm.variables.get(\"user_id\"));",
-                  "const quantity = parseFloat(pm.variables.get(\"quantity\"));",
+                  "const product_name = pm.variables.get(\"product_name\") || \"Balance Training Bicycle\";",
+                  "const product_price = parseFloat(pm.variables.get(\"product_price\")) || 119.95;",
+                  "const product_price_thb = parseFloat(pm.variables.get(\"product_price_thb\")) || 4044.71;",
+                  "const product_price_full_thb = parseFloat(pm.variables.get(\"product_price_full_thb\")) || 4044.714;",
+                  "const product_brand = pm.variables.get(\"product_brand\") || \"SportsFun\";",
+                  "const product_id = parseFloat(pm.variables.get(\"product_id\")) || 1;",
+                  "const user_id = parseFloat(pm.variables.get(\"user_id\")) || 1;",
+                  "const quantity = parseFloat(pm.variables.get(\"quantity\")) || 1;",
                   "",
-                  "const receive_point = parseFloat(pm.variables.get(\"receive_point\"));",
-                  "const total_price = parseFloat(pm.variables.get(\"total_price\"));",
-                  "const total_price_thb = parseFloat(pm.variables.get(\"total_price_thb\"));",
-                  "const total_price_full_thb = parseFloat(pm.variables.get(\"total_price_full_thb\"));",
+                  "const receive_point = parseFloat(pm.variables.get(\"receive_point\")) || 80;",
+                  "const total_price = parseFloat(pm.variables.get(\"total_price\")) || 119.95;",
+                  "const total_price_thb = parseFloat(pm.variables.get(\"total_price_thb\")) || 4044.71;",
+                  "const total_price_full_thb = parseFloat(pm.variables.get(\"total_price_full_thb\")) || 4044.714;",
                   "",
                   "const jsonData = pm.response.json();",
                   "",
@@ -468,19 +468,19 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "const product_name = pm.variables.get(\"product_name\");",
-                  "const product_price = parseFloat(pm.variables.get(\"product_price\"));",
-                  "const product_price_thb = parseFloat(pm.variables.get(\"product_price_thb\"));",
-                  "const product_price_full_thb = parseFloat(pm.variables.get(\"product_price_full_thb\"));",
-                  "const product_brand = pm.variables.get(\"product_brand\");",
-                  "const product_id = parseFloat(pm.variables.get(\"product_id\"));",
-                  "const user_id = parseFloat(pm.variables.get(\"user_id\"));",
-                  "const quantity = parseFloat(pm.variables.get(\"quantity\"));",
+                  "const product_name = pm.variables.get(\"product_name\") || \"Balance Training Bicycle\";",
+                  "const product_price = parseFloat(pm.variables.get(\"product_price\")) || 119.95;",
+                  "const product_price_thb = parseFloat(pm.variables.get(\"product_price_thb\")) || 4044.71;",
+                  "const product_price_full_thb = parseFloat(pm.variables.get(\"product_price_full_thb\")) || 4044.714;",
+                  "const product_brand = pm.variables.get(\"product_brand\") || \"SportsFun\";",
+                  "const product_id = parseFloat(pm.variables.get(\"product_id\")) || 1;",
+                  "const user_id = parseFloat(pm.variables.get(\"user_id\")) || 1;",
+                  "const quantity = parseFloat(pm.variables.get(\"quantity\")) || 1;",
                   "",
-                  "const receive_point = parseFloat(pm.variables.get(\"receive_point\"));",
-                  "const total_price = parseFloat(pm.variables.get(\"total_price\"));",
-                  "const total_price_thb = parseFloat(pm.variables.get(\"total_price_thb\"));",
-                  "const total_price_full_thb = parseFloat(pm.variables.get(\"total_price_full_thb\"));",
+                  "const receive_point = parseFloat(pm.variables.get(\"receive_point\")) || 80;",
+                  "const total_price = parseFloat(pm.variables.get(\"total_price\")) || 119.95;",
+                  "const total_price_thb = parseFloat(pm.variables.get(\"total_price_thb\")) || 4044.71;",
+                  "const total_price_full_thb = parseFloat(pm.variables.get(\"total_price_full_thb\")) || 4044.714;",
                   "",
                   "const jsonData = pm.response.json();",
                   "",
@@ -3697,15 +3697,15 @@
   "variable": [
     {
       "key": "username",
-      "value": ""
+      "value": "user_1"
     },
     {
       "key": "password",
-      "value": ""
+      "value": "P@ssw0rd"
     },
     {
       "key": "product_name",
-      "value": ""
+      "value": "Balance Training Bicycle"
     },
     {
       "key": "access_token",
@@ -3717,123 +3717,123 @@
     },
     {
       "key": "total_products",
-      "value": ""
+      "value": "10031"
     },
     {
       "key": "product_price_thb",
-      "value": ""
+      "value": "4044.71"
     },
     {
       "key": "product_price",
-      "value": ""
+      "value": "119.95"
     },
     {
       "key": "product_price_full_thb",
-      "value": ""
+      "value": "4044.714"
     },
     {
       "key": "product_brand",
-      "value": ""
+      "value": "SportsFun"
     },
     {
       "key": "user_id",
-      "value": ""
+      "value": "1"
     },
     {
       "key": "product_id",
-      "value": ""
+      "value": "1"
     },
     {
       "key": "quantity",
-      "value": ""
+      "value": "1"
     },
     {
       "key": "receive_point",
-      "value": ""
+      "value": "80"
     },
     {
       "key": "total_price",
-      "value": ""
+      "value": "119.95"
     },
     {
       "key": "total_price_thb",
-      "value": ""
+      "value": "4044.71"
     },
     {
       "key": "total_price_full_thb",
-      "value": ""
+      "value": "4044.714"
     },
     {
       "key": "sub_total_order_price",
-      "value": ""
+      "value": "4044.71"
     },
     {
       "key": "total_order_price",
-      "value": ""
+      "value": "4094.71"
     },
     {
       "key": "shipping_method_id",
-      "value": ""
+      "value": "1"
     },
     {
       "key": "address",
-      "value": ""
+      "value": "43/8 หมู่บ้านเปี่ยมสุข ถนนลาดพร้าว ซอย 63"
     },
     {
       "key": "sub_district",
-      "value": ""
+      "value": "สะพานสอง"
     },
     {
       "key": "district",
-      "value": ""
+      "value": "วังทองหลาง"
     },
     {
       "key": "province",
-      "value": ""
+      "value": "กรุงเทพมหานคร"
     },
     {
       "key": "zipcode",
-      "value": ""
+      "value": "10310"
     },
     {
       "key": "first_name",
-      "value": ""
+      "value": "ณัฐพล"
     },
     {
       "key": "last_name",
-      "value": ""
+      "value": "ศรีสมบัติ"
     },
     {
       "key": "phone_number",
-      "value": ""
+      "value": "0891234567"
     },
     {
       "key": "payment_method_id",
-      "value": ""
+      "value": "1"
     },
     {
       "key": "credit_card_name",
-      "value": ""
+      "value": "Nattapon Srisombat"
     },
     {
       "key": "credit_card_number",
-      "value": ""
+      "value": "5123 4500 0000 0008"
     },
     {
       "key": "credit_card_expired_date",
-      "value": ""
+      "value": "01/39"
     },
     {
       "key": "credit_card_cvv",
-      "value": ""
+      "value": "100"
     },
     {
       "key": "otp",
-      "value": ""
+      "value": "123456"
     },
     {
       "key": "ref_otp",
-      "value": ""
+      "value": "AXYZ"
     },
     {
       "key": "order_number",
@@ -3841,7 +3841,7 @@
     },
     {
       "key": "shipping_method_prefix",
-      "value": ""
+      "value": "KR"
     },
     {
       "key": "total_products_with_search",

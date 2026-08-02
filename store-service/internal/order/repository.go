@@ -123,7 +123,7 @@ func (repository OrderRepositoryMySQL) GetOrderProduct(ctx context.Context, orde
 
 func (repository OrderRepositoryMySQL) GetOrderProductWithPrice(ctx context.Context, orderID int) ([]OrderProductWithPrice, error) {
 	var orderProducts []OrderProductWithPrice
-	err := repository.DBConnection.SelectContext(ctx, &orderProducts, "SELECT p.product_brand, p.product_name, op.quantity, op.product_price FROM products p JOIN order_product op ON p.id = op.product_id WHERE order_id = ?", orderID)
+	err := repository.DBConnection.SelectContext(ctx, &orderProducts, "SELECT p.id AS product_id, p.product_brand, p.product_name, op.quantity, op.product_price FROM products p JOIN order_product op ON p.id = op.product_id WHERE order_id = ?", orderID)
 	return orderProducts, err
 }
 

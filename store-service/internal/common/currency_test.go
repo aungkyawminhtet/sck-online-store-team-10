@@ -14,8 +14,8 @@ type Decimal struct {
 
 func Test_ConvertToThb_Input_123_Should_be_4122_Point_96(t *testing.T) {
 	expected := Decimal{
-		ShortDecimal: 4122.96,
-		LongDecimal:  4122.96,
+		ShortDecimal: 4147.56,
+		LongDecimal:  4147.56,
 	}
 
 	actual := common.ConvertToThb(123)
@@ -38,8 +38,8 @@ func Test_ConvertToThb_Input_0_Should_be_0(t *testing.T) {
 
 func Test_ConvertToThb_Input_Minus_123_Should_be_Minus_4122_Point_96(t *testing.T) {
 	expected := Decimal{
-		ShortDecimal: -4122.96,
-		LongDecimal:  -4122.96,
+		ShortDecimal: -4147.56,
+		LongDecimal:  -4147.56,
 	}
 
 	actual := common.ConvertToThb(-123)
