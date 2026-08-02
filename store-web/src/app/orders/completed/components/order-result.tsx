@@ -93,9 +93,7 @@ const OrderResult = () => {
               {trackingNumber}
             </a>
           </div>
-        ) : (
-          <span id="order-success-tracking-id" className="hidden"></span>
-        )}
+        ) : null}
       </Text>
       <Button
         id="download-order-summary-btn"
