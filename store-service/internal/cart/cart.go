@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"log/slog"
+	"math"
 	"store-service/internal/common"
 	"store-service/internal/point"
 )
@@ -56,9 +57,18 @@ func (cartService CartService) GetCart(ctx context.Context, uid int) (CartResult
 		}, err
 	}
 
-	decimal := common.ConvertToThb(totalPrice)
-	totalPriceTHB := decimal.ShortDecimal
-	totalPriceFullTHB := decimal.LongDecimal
+	totalPriceTHB := 0.0
+	totalPriceFullTHB := 0.0
+	for i := range carts {
+		c := &carts[i]
+		totalPriceTHB += c.PriceTHB * float64(c.Quantity)
+		totalPriceFullTHB += c.PriceFullTHB * float64(c.Quantity)
+	}
+
+	factor2 := math.Pow(10, 2)
+	factor6 := math.Pow(10, 6)
+	totalPriceTHB = math.Round(totalPriceTHB*factor2) / factor2
+	totalPriceFullTHB = math.Round(totalPriceFullTHB*factor6) / factor6
 
 	return CartResult{
 		Carts: carts,

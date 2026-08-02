@@ -39,6 +39,7 @@ type OrderProduct struct {
 }
 
 type OrderProductWithPrice struct {
+	ProductID    int     `json:"product_id" db:"product_id"`
 	ProductBrand string  `json:"product_brand" db:"product_brand"`
 	ProductName  string  `json:"product_name" db:"product_name"`
 	Quantity     int     `json:"quantity" db:"quantity"`
