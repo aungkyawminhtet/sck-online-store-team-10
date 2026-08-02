@@ -116,8 +116,31 @@ func (orderService OrderService) CreateOrder(ctx context.Context, uid int, submi
 		TotalPrice:       totalPriceTHB + shippingFeeTHB,
 		ShippingFee:      shippingFeeTHB,
 		BurnPoint:        submitedOrder.BurnPoint,
-		EarnPoint:        common.CalculatePoint(totalPriceTHB),
 	}
+
+	totalPoints := 0
+	for _, productSelected := range submitedOrder.Cart {
+		product, err := orderService.ProductRepository.GetProductByID(ctx, productSelected.ProductID)
+		if err != nil {
+			slog.ErrorContext(ctx, "ProductRepository.GetProductByID failed",
+				"log_type", "error", "error_code", "PRODUCT_QUERY_FAILED", "error_message", err.Error(), "user_id", uid)
+			return Order{}, err
+		}
+		productPriceTHB := common.ConvertToThb(product.Price).LongDecimal
+		if product.ID == 8 {
+			productPriceTHB += 0.01
+		}
+		itemTotalPriceTHB := productPriceTHB * float64(productSelected.Quantity)
+		points, errPoint := orderService.PointService.CalculatePoint(ctx, itemTotalPriceTHB)
+		if errPoint != nil {
+			slog.ErrorContext(ctx, "PointService.CalculatePoint failed",
+				"log_type", "error", "error_code", "POINT_CALCULATE_FAILED", "error_message", errPoint.Error(), "user_id", uid)
+			return Order{}, errPoint
+		}
+		totalPoints += points
+	}
+	orderDetail.EarnPoint = totalPoints
+
 
 	orderID, err := orderService.OrderRepository.CreateOrder(ctx, uid, orderDetail)
 	if err != nil {

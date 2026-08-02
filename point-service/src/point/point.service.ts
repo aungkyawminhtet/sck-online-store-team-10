@@ -25,10 +25,10 @@ export class PointService {
         severityText: 'INFO',
         body: 'Points retrieved',
         attributes: {
-          'log_type': 'business',
-          'event': 'points_retrieved',
-          'entity_type': 'point',
-          'items_count': points.length,
+          log_type: 'business',
+          event: 'points_retrieved',
+          entity_type: 'point',
+          items_count: points.length,
         },
       });
       return points;
@@ -55,13 +55,13 @@ export class PointService {
         severityText: 'INFO',
         body: 'Points deducted',
         attributes: {
-          'log_type': 'state_change',
-          'event': 'points_deducted',
-          'entity_type': 'point',
-          'entity_id': saved.id,
-          'changed_by': point.userId,
-          'org_id': point.orgId,
-          'amount': point.amount,
+          log_type: 'state_change',
+          event: 'points_deducted',
+          entity_type: 'point',
+          entity_id: saved.id,
+          changed_by: point.userId,
+          org_id: point.orgId,
+          amount: point.amount,
         },
       });
       return saved;
@@ -75,5 +75,12 @@ export class PointService {
       });
       throw error;
     }
+  }
+
+  calculatePoint(amount: number): number {
+    if (amount < 0) {
+      return 0;
+    }
+    return Math.floor(amount / 50);
   }
 }
