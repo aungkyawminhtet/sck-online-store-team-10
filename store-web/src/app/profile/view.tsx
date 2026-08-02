@@ -11,7 +11,8 @@ export default function ProfileView() {
   const router = useRouter();
   const user = useUserStore((state) => state.user);
   const clearUser = useUserStore((state) => state.clearUser);
-  const [point, setPoint] = useState<number>(0);
+  const [pendingPoint, setPendingPoint] = useState(0);
+  const [approvedPoint, setApprovedPoint] = useState(0);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -22,8 +23,9 @@ export default function ProfileView() {
     }
     const fetchPoint = async () => {
       const res: GetPointServiceResponse = await getPointService();
-      if (res.data?.point !== undefined) {
-        setPoint(res.data.point);
+      if (res.data) {
+        setPendingPoint(res.data.pending_point ?? 0);
+        setApprovedPoint(res.data.approved_point ?? res.data.point ?? 0);
       }
       setLoading(false);
     };
@@ -59,9 +61,16 @@ export default function ProfileView() {
           {loading ? (
             <p className="text-gray-600">Loading points…</p>
           ) : (
-            <p className="text-gray-700">
-              <span className="font-medium">Points:</span> {point}
-            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="border border-gray-200 p-3 rounded-lg bg-gray-50">
+                <p className="text-xs text-gray-500">Pending points</p>
+                <p className="text-xl font-semibold text-amber-700">{pendingPoint}</p>
+              </div>
+              <div className="border border-gray-200 p-3 rounded-lg bg-gray-50">
+                <p className="text-xs text-gray-500">Approved points</p>
+                <p className="text-xl font-semibold text-green-700">{approvedPoint}</p>
+              </div>
+            </div>
           )}
         </div>
         <Button onClick={handleLogout} isblock="true" className="mt-2">

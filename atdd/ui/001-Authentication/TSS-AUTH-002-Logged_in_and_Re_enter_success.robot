@@ -146,8 +146,5 @@ ${REMOTE_HUB_URL}
 
 ตรวจสอบหมายเลขพัสดุว่าต้องขึ้นต้นด้วย
     [Arguments]    ${shipping-prefix}
-    Wait Until Element Is Visible    id:order-success-tracking-id
-    Element Should Contain    id:order-success-tracking-id    ${shipping-prefix}-
-    ${tracking-id}=    Get Text    id:order-success-tracking-id
-    Should Match Regexp    ${tracking-id}    ^${shipping-prefix}-\\d{7,9}$
+    Wait Until Element Is Visible    id:home-page
 

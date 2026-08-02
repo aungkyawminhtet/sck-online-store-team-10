@@ -1,4 +1,3 @@
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreatePointDto } from '../point.dto';
 import { PointController } from '../point.controller';
@@ -10,6 +9,8 @@ describe('PointController', () => {
   const mockPointService = {
     getPoint: jest.fn(),
     deductPoint: jest.fn(),
+    approvePoint: jest.fn(),
+    calculatePoint: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -47,8 +48,9 @@ describe('PointController', () => {
       updated: '2024-08-25T09:06:58',
     } as CreatePointDto;
 
-
-    jest.spyOn(mockPointService, 'deductPoint').mockReturnValue(createPointResponse);
+    jest
+      .spyOn(mockPointService, 'deductPoint')
+      .mockReturnValue(createPointResponse);
 
     // act
     const result = await controller.createPoint(createPointInput);
@@ -69,15 +71,14 @@ describe('PointController', () => {
       created: '2024-08-25T09:06:58',
       updated: '2024-08-25T09:06:58',
     };
-    const points = [point];
+    const points = { point: 300, pendingPoint: 0, approvedPoint: 300 };
     jest.spyOn(mockPointService, 'getPoint').mockReturnValue(points);
 
     //act
-    const result = await controller.getPoint();
+    const result = await controller.getPoint('1');
 
     // assert
     expect(result).toEqual(points);
-    expect(mockPointService.getPoint).toBeCalled();
+    expect(mockPointService.getPoint).toBeCalledWith(1);
   });
-
 });

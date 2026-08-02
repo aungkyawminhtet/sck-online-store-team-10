@@ -20,13 +20,9 @@ func Test_DeductPoint_Input_Amount_100_Should_be_Point_100(t *testing.T) {
 		UserID: uid,
 		Amount: 100,
 	}
-	pointList := []point.Point{
-		pointItem,
-	}
-
 	mockPointGateway := new(mockPointGateway)
 	mockPointGateway.On("CreatePoint", mock.Anything, uid, pointItem).Return(pointItem, nil)
-	mockPointGateway.On("GetPoints", mock.Anything, uid).Return(pointList, nil)
+	mockPointGateway.On("GetPointBalance", mock.Anything, uid).Return(expected, nil)
 
 	pointService := point.PointService{
 		PointGateway: mockPointGateway,
@@ -47,13 +43,9 @@ func Test_DeductPoint_Input_Amount_Minus_100_Should_be_Error(t *testing.T) {
 		UserID: uid,
 		Amount: -100,
 	}
-	pointList := []point.Point{
-		pointItem,
-	}
-
 	mockPointGateway := new(mockPointGateway)
 	mockPointGateway.On("CreatePoint", mock.Anything, uid, pointItem).Return(pointItem, nil)
-	mockPointGateway.On("GetPoints", mock.Anything, uid).Return(pointList, nil)
+	mockPointGateway.On("GetPointBalance", mock.Anything, uid).Return(point.TotalPoint{}, nil)
 
 	pointService := point.PointService{
 		PointGateway: mockPointGateway,
@@ -70,21 +62,8 @@ func Test_TotalPoint_Point_100_and_50_Should_be_Point_150(t *testing.T) {
 		Point: 150,
 	}
 	uid := 1
-	res := []point.Point{
-		{
-			OrgID:  1,
-			UserID: 1,
-			Amount: 100,
-		},
-		{
-			OrgID:  1,
-			UserID: 1,
-			Amount: 50,
-		},
-	}
-
 	mockPointGateway := new(mockPointGateway)
-	mockPointGateway.On("GetPoints", mock.Anything, uid).Return(res, nil)
+	mockPointGateway.On("GetPointBalance", mock.Anything, uid).Return(expected, nil)
 
 	pointService := point.PointService{
 		PointGateway: mockPointGateway,
@@ -100,21 +79,8 @@ func Test_TotalPoint_Point_100_and_Minus_50_Should_be_Point_50(t *testing.T) {
 		Point: 50,
 	}
 	uid := 1
-	res := []point.Point{
-		{
-			OrgID:  1,
-			UserID: 1,
-			Amount: 100,
-		},
-		{
-			OrgID:  1,
-			UserID: 1,
-			Amount: -50,
-		},
-	}
-
 	mockPointGateway := new(mockPointGateway)
-	mockPointGateway.On("GetPoints", mock.Anything, uid).Return(res, nil)
+	mockPointGateway.On("GetPointBalance", mock.Anything, uid).Return(expected, nil)
 
 	pointService := point.PointService{
 		PointGateway: mockPointGateway,

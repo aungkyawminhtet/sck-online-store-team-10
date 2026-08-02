@@ -39,7 +39,7 @@ const PaymentView = () => {
       })
 
       if (result.data) {
-        window.location.href = '/product/list'
+        window.location.href = '/'
       }
     }
   }

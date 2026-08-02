@@ -11,9 +11,9 @@ type mockPointGateway struct {
 	mock.Mock
 }
 
-func (gateway *mockPointGateway) GetPoints(ctx context.Context, userID int) ([]point.Point, error) {
+func (gateway *mockPointGateway) GetPointBalance(ctx context.Context, userID int) (point.TotalPoint, error) {
 	argument := gateway.Called(ctx, userID)
-	return argument.Get(0).([]point.Point), argument.Error(1)
+	return argument.Get(0).(point.TotalPoint), argument.Error(1)
 }
 
 func (gateway *mockPointGateway) CreatePoint(ctx context.Context, userID int, pointItem point.Point) (point.Point, error) {

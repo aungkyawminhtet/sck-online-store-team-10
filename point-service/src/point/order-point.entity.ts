@@ -1,10 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  Index,
+} from 'typeorm';
 
 export enum OrderPointStatus {
+  PENDING = 'PENDING',
   ACTIVE = 'ACTIVE',
   SPENT = 'SPENT',
   EXPIRED = 'EXPIRED',
-  VOID = 'VOID'
+  VOID = 'VOID',
 }
 
 @Entity('order_point')
@@ -31,7 +38,7 @@ export class OrderPoint {
   @Column({
     type: 'enum',
     enum: OrderPointStatus,
-    default: OrderPointStatus.ACTIVE
+    default: OrderPointStatus.PENDING,
   })
   status: OrderPointStatus;
 

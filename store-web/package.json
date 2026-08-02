@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write \"./**/*.{js,jsx,ts,tsx,json}\"",
+    "docker:up": "docker compose -f ../docker-compose.yml up -d store-web --build",
+    "docker:status": "docker compose -f ../docker-compose.yml ps",
+    "docker:logs": "docker compose -f ../docker-compose.yml logs -f store-web",
     "cy:open": "cypress open",
     "cy:run": "cypress run --component",
     "test:component": " cypress run --component --spec \"**/*.cy.tsx\""

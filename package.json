@@ -1,0 +1,10 @@
+{
+  "name": "sck-online-store-team-10",
+  "private": true,
+  "scripts": {
+    "docker:up": "docker compose up -d store-web --build",
+    "docker:status": "docker compose ps",
+    "docker:logs": "docker compose logs -f store-web",
+    "docker:down": "docker compose down"
+  }
+}

@@ -6,9 +6,9 @@ import (
 	"log/slog"
 	"store-service/internal/metrics"
 	"store-service/internal/order"
+	"store-service/internal/point"
 	"store-service/internal/product"
 	"store-service/internal/shipping"
-	"store-service/internal/point"
 	"time"
 
 	"go.opentelemetry.io/otel/attribute"
@@ -175,7 +175,8 @@ func (service PaymentService) ConfirmPayment(ctx context.Context, uid int, submi
 
 	if service.PointService != nil && orderDetail.EarnPoint > 0 {
 		submit := point.SubmitedPoint{
-			Amount: orderDetail.EarnPoint,
+			Amount:  orderDetail.EarnPoint,
+			OrderID: orderDetail.ID,
 		}
 		_, err = service.PointService.DeductPoint(ctx, uid, submit)
 		if err != nil {

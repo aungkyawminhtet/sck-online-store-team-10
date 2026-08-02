@@ -13,31 +13,39 @@ type PointGateway struct {
 	PointEndpoint string
 }
 
-func (gateway PointGateway) GetPoints(ctx context.Context, uid int) ([]Point, error) {
-	endPoint := gateway.PointEndpoint + "/api/v1/point"
+func (gateway PointGateway) GetPointBalance(ctx context.Context, uid int) (TotalPoint, error) {
+	endPoint := fmt.Sprintf("%s/api/v1/point?userId=%d", gateway.PointEndpoint, uid)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, endPoint, nil)
 	if err != nil {
-		return []Point{}, err
+		return TotalPoint{}, err
 	}
 	response, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return []Point{}, err
+		return TotalPoint{}, err
 	}
 	if response.StatusCode != 200 {
-		return []Point{}, fmt.Errorf("response is not ok but it's %d", response.StatusCode)
+		return TotalPoint{}, fmt.Errorf("response is not ok but it's %d", response.StatusCode)
 	}
 	responseData, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return []Point{}, err
+		return TotalPoint{}, err
 	}
 
-	var PointGatewayResponse []Point
+	var PointGatewayResponse struct {
+		Point         int `json:"point"`
+		PendingPoint  int `json:"pendingPoint"`
+		ApprovedPoint int `json:"approvedPoint"`
+	}
 	err = json.Unmarshal(responseData, &PointGatewayResponse)
 	if err != nil {
-		return []Point{}, err
+		return TotalPoint{}, err
 	}
 
-	return PointGatewayResponse, nil
+	return TotalPoint{
+		Point:         PointGatewayResponse.Point,
+		PendingPoint:  PointGatewayResponse.PendingPoint,
+		ApprovedPoint: PointGatewayResponse.ApprovedPoint,
+	}, nil
 }
 
 func (gateway PointGateway) CreatePoint(ctx context.Context, uid int, body Point) (Point, error) {

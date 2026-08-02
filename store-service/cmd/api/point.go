@@ -3,7 +3,6 @@ package api
 import (
 	"log/slog"
 	"net/http"
-	"strconv"
 
 	"store-service/internal/point"
 
@@ -39,10 +38,7 @@ func (api PointAPI) DeductPointHandler(context *gin.Context) {
 		return
 	}
 
-	uid, uidErr := strconv.Atoi(context.GetHeader("uid"))
-	if uidErr != nil {
-		uid = 1
-	}
+	uid := context.GetInt("userID")
 
 	res, err := api.PointService.DeductPoint(ctx, uid, request)
 	if err != nil {
@@ -83,10 +79,7 @@ func (api PointAPI) DeductPointHandler(context *gin.Context) {
 // @Failure 500
 // @Router /api/v1/point [get]
 func (api PointAPI) TotalPointHandler(context *gin.Context) {
-	uid, uidErr := strconv.Atoi(context.GetHeader("uid"))
-	if uidErr != nil {
-		uid = 1
-	}
+	uid := context.GetInt("userID")
 
 	ctx := context.Request.Context()
 	res, err := api.PointService.TotalPoint(ctx, uid)
