@@ -39,15 +39,7 @@ const PaymentView = () => {
       })
 
       if (result.data) {
-        const convertResultToObject = {
-          order: result.data.order_number.toString(),
-          shipping: result.data.shipping_method_id.toString(),
-          payment: result.data.payment_date,
-          tracking: result.data.tracking_number
-        }
-
-        const query = new URLSearchParams(convertResultToObject).toString()
-        window.location.href = `/orders/completed?${query}`
+        window.location.href = '/product/list'
       }
     }
   }

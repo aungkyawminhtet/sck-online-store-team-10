@@ -78,8 +78,10 @@ func Test_OrderRepository(t *testing.T) {
 	t.Run("UpdateOrderTransaction_Input_TransactionID_TXN202002021525_OrderID_1_Should_No_Error", func(t *testing.T) {
 		txn := "TXN202002021525"
 		oid := 1
+		otp := 123456
+		refOTP := "AXYZ"
 
-		err := repository.UpdateOrderTransaction(context.Background(), oid, txn)
+		err := repository.UpdateOrderTransaction(context.Background(), oid, txn, otp, refOTP)
 
 		assert.Equal(t, nil, err)
 	})
@@ -88,8 +90,10 @@ func Test_OrderRepository(t *testing.T) {
 		expectedError := fmt.Errorf("no any row affected , update not completed")
 		transactionID := "TXN202002021525"
 		orderID := 11111111119
+		otp := 123456
+		refOTP := "AXYZ"
 
-		err := repository.UpdateOrderTransaction(context.Background(), orderID, transactionID)
+		err := repository.UpdateOrderTransaction(context.Background(), orderID, transactionID, otp, refOTP)
 
 		assert.Equal(t, expectedError, err)
 	})

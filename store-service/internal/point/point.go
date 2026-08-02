@@ -47,7 +47,7 @@ func (pointService PointService) DeductPoint(ctx context.Context, uid int, submi
 
 	point := Point{
 		OrgID:  1,
-		UserID: 1,
+		UserID: uid,
 		Amount: submitedPoint.Amount,
 	}
 	_, err_ := pointService.PointGateway.CreatePoint(ctx, uid, point)

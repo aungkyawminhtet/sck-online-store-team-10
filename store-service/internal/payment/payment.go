@@ -8,6 +8,7 @@ import (
 	"store-service/internal/order"
 	"store-service/internal/product"
 	"store-service/internal/shipping"
+	"store-service/internal/point"
 	"time"
 
 	"go.opentelemetry.io/otel/attribute"
@@ -23,6 +24,7 @@ type PaymentService struct {
 	ShippingGateway   ShippingGatewayInterface
 	OrderRepository   order.OrderRepository
 	ProductRepository product.ProductRepository
+	PointService      point.PointInterface
 }
 
 type BankGatewayInterface interface {
@@ -117,7 +119,7 @@ func (service PaymentService) ConfirmPayment(ctx context.Context, uid int, submi
 		)
 	}
 
-	err = service.OrderRepository.UpdateOrderTransaction(ctx, orderDetail.ID, transactionId)
+	err = service.OrderRepository.UpdateOrderTransaction(ctx, orderDetail.ID, transactionId, submitedPayment.OTP, submitedPayment.RefOTP)
 	if err != nil {
 		slog.ErrorContext(ctx, "OrderRepository.UpdateOrderTransaction failed",
 			"log_type", "error", "error_code", "ORDER_TRANSACTION_FAILED", "error_message", err.Error(),
@@ -169,6 +171,18 @@ func (service PaymentService) ConfirmPayment(ctx context.Context, uid int, submi
 				attribute.String("error_type", ""),
 			),
 		)
+	}
+
+	if service.PointService != nil && orderDetail.EarnPoint > 0 {
+		submit := point.SubmitedPoint{
+			Amount: orderDetail.EarnPoint,
+		}
+		_, err = service.PointService.DeductPoint(ctx, uid, submit)
+		if err != nil {
+			slog.ErrorContext(ctx, "PointService.DeductPoint failed for EarnPoint",
+				"log_type", "error", "error_code", "EARN_POINT_FAILED", "error_message", err.Error(),
+				"user_id", uid, "order_number", orderNumber)
+		}
 	}
 
 	return SubmitedPaymentResponse{
